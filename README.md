@@ -5,11 +5,11 @@ A fast, local browser new-tab replacement page with a categorised link list, fuz
 ## Features
 
 - **Links list** — sourced from a local Obsidian markdown file, grouped by category, with optional circular logos
-- **Tab layout** — Links tab (search, sort, links) and Extra tab (Premier League table + Liverpool fixtures); active tab persists in sessionStorage
+- **Tab layout** — Links tab (search, sort, links) and Extra tab (Premier League table + Liverpool fixtures); active tab persists in localStorage
 - **Sort toggle** — switch between Frequency (flat grid sorted by click count + A–Z tiebreaker) and Grouping (category headers with Recent group at top); sort bar is hidden by default — click the gear icon (⚙) in the search bar to reveal it; buttons span the full grid width, smaller font on mobile
 - **Recently visited** — Google searches made from the search bar appear as a "Recent" group in Grouping mode (stored in localStorage); links from the main list stay in their original category
 - **Click tracking** — every link click increments a count, shown with a pointer cursor SVG + count on every card; click timestamps stored in localStorage (`ntv2-click-counts`) to support time-range resets; ↺ Reset stats button opens a modal with options: past hour / 24 h / week / all stats; modal shows a confirmation message after resetting (title + time frame covered), then auto-closes after 1.5 s
-- **Umami stats** — per-link icon + count + diff-in-brackets + ▲/▼ indicator; metric (Visitors / Pageviews / Visits) and time period (24 h / 7 d / 30 d) toggle buttons in the sort bar; metric switch is instant from cache, period switch re-fetches from API
+- **Umami stats** — per-link icon + count + diff-in-brackets + ▲/▼ indicator; metric (Visitors / Pageviews / Visits) and time period (24 h / 7 d / 30 d) toggle buttons in the sort bar; defaults to 30 d; metric switch is instant from cache, period switch re-fetches from API; metric, period, sort mode, and sort bar visibility all persist in localStorage
 - **Fuzzy search** — Fuse.js powered, searches link name and category (typo-tolerant); auto-focused on page load; Enter opens a Google search in a new tab
 - **Weather widget** — expanded by default on desktop (>600 px), collapsed on mobile; click to toggle; shows 24-hour strip + 7-day forecast via Open-Meteo (no API key required)
 - **Glassmorphism UI** — backdrop blur cards, responsive 3-column grid on desktop / 1 column on mobile

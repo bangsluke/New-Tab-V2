@@ -146,6 +146,12 @@ main {
 .search-settings-btn.active { opacity: 1; color: var(--accent); }
 .search-settings-btn svg { width: 18px; height: 18px; display: block; }
 
+@media (max-width: 600px) {
+  #search-input { padding: 0.6rem 1rem; font-size: 0.95rem; }
+  .search-google-btn { padding: 0.52rem 0.65rem; }
+  .search-settings-btn { padding: 0.52rem 0.52rem; }
+}
+
 /* ── Tab bar ─────────────────────────────────────────────────────────────── */
 #tab-bar {
   display: flex; gap: 0.5rem; padding: 0.25rem;
@@ -168,6 +174,10 @@ main {
 }
 .tab-panel { display: none; }
 .tab-panel.active { display: flex; flex-direction: column; gap: 1.5rem; }
+
+@media (max-width: 600px) {
+  .tab-btn { padding: 0.3rem 0.75rem; font-size: 0.82rem; }
+}
 
 /* ── Sort bar ────────────────────────────────────────────────────────────── */
 #sort-bar {
@@ -232,6 +242,7 @@ main {
   .links-grid { grid-template-columns: 1fr; }
   main { padding: 0 0.75rem 4rem; }
   .glass-card { padding: 1rem 0.9rem; }
+  .link-card { padding: 0.5rem 0.75rem; min-height: 44px; }
 }
 
 /* ── Link card ───────────────────────────────────────────────────────────── */
