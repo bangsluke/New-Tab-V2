@@ -534,7 +534,6 @@ async function fetchUmamiStats(links) {
       try {
         const stat = await fetchUmamiWindow(config, link.umamiId, now - duration, now);
         umamiCache[link.umamiId] = stat;
-        console.debug(`Umami raw [${link.name}]:`, JSON.stringify(stat));
       } catch (err) {
         console.warn(`Umami fetch failed for ${link.name}:`, err.message);
       }
@@ -759,8 +758,8 @@ async function loadFootballConfig() {
   }
 }
 
-async function fetchFootball(url, token) {
-  const res = await fetch(url, { headers: { 'X-Auth-Token': token } });
+async function fetchFootball(url) {
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
@@ -790,8 +789,8 @@ async function initFootball() {
 
   try {
     const [standingsData, fixturesData] = await Promise.all([
-      fetchFootball('https://api.football-data.org/v4/competitions/PL/standings', config.token),
-      fetchFootball(`https://api.football-data.org/v4/teams/${LIVERPOOL_ID}/matches?status=SCHEDULED&limit=5`, config.token),
+      fetchFootball('/.netlify/functions/football?type=standings'),
+      fetchFootball('/.netlify/functions/football?type=fixtures'),
     ]);
 
     const table = standingsData?.standings?.[0]?.table ?? [];
@@ -801,7 +800,7 @@ async function initFootball() {
     renderPLTable(plSection, table);
     if (fixSection) renderFixtures(fixSection, matches);
   } catch (err) {
-    const msg = `Football data unavailable (${err.message}). This works when deployed — CORS on the free tier only allows port 80 locally. Use <code>npx serve -l 80 .</code> (requires admin) or deploy to Netlify to test.`;
+    const msg = `Football data unavailable (${err.message}). To test locally, run <code>netlify dev</code>.`;
     plSection.innerHTML = `<p class="section-placeholder">${msg}</p>`;
     if (fixSection) fixSection.innerHTML = '';
   }
