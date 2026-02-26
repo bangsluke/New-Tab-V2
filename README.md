@@ -29,6 +29,9 @@ New-Tab-V2/
 │   ├── umami-config.json       # GENERATED — gitignored (contains API key)
 │   └── football-config.json    # GENERATED — gitignored (contains API key)
 ├── prompts/                    # Project planning docs
+├── netlify/
+│   └── functions/
+│       └── football.js         # Serverless proxy — forwards football API calls server-side
 ├── scripts/
 │   ├── refresh-links.js        # Parses Obsidian .md → data/ JSON files (local)
 │   └── netlify-build.js        # Netlify build step — generates config JSONs from env vars
@@ -126,7 +129,7 @@ The Extra tab shows a live Premier League table (P / W / D / L / GD / Pts) and L
 
 Data is cached in `sessionStorage` and refreshed once per browser session.
 
-> **CORS note:** The football-data.org free tier only allows CORS requests from `http://localhost` on port 80. Any local dev server running on a different port (e.g. 3000, 5500) will be blocked. This is a local-only limitation — the page works correctly when deployed to Netlify or any hosted environment. To test locally on port 80, run `npx serve -l 80 .` (requires admin/elevated permissions).
+Football requests are proxied through a Netlify Function (`netlify/functions/football.js`) so the API key is never exposed to the browser and the free-tier CORS restriction is bypassed. To test football data locally, run `netlify dev` (requires the [Netlify CLI](https://docs.netlify.com/cli/get-started/)).
 
 ## Deploying to Netlify
 
@@ -145,7 +148,7 @@ The site is fully static — Netlify serves it directly. The build step generate
 
 > **Testing the build locally:** Run `npm run netlify` (with env vars set in your shell or `.env`) to verify the config files are generated correctly before pushing.
 
-> **CORS note:** The football-data.org free tier allows CORS from any hosted domain. The `http://localhost` port-80 restriction only applies to local development — it works correctly on Netlify.
+> **Local football data:** The football API is proxied through a Netlify Function — it won't work with `npx serve .`. Run `netlify dev` to serve the site with Functions support for local testing.
 
 ## Tech Stack
 
