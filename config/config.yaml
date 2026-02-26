@@ -1,0 +1,9 @@
+# ──────────────────────────────────────────────
+# New Tab Website V2 — Configuration
+# ──────────────────────────────────────────────
+
+# The link to the file that contains the list of links to be used in the website.
+links-list-source-file-path: 'C:\Users\bangs\Documents\Obsidian Personal Notes\01 Notes\01 Projects\01 Active Projects\New Tab Website V2.md'
+
+# The exact text of the heading above the links table (any heading level, e.g. ## or ###).
+links-list-heading: 'Links List'

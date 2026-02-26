@@ -1,0 +1,12 @@
+{
+  "name": "new-tab-v2",
+  "version": "1.0.0",
+  "description": "Local browser new tab replacement page",
+  "scripts": {
+    "refresh": "node scripts/refresh-links.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "js-yaml": "^4.1.0"
+  }
+}

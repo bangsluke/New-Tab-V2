@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\bangs\\\\Documents\\\\Coding Projects\\\\New-Tab-V2\" && npm install 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\bangs\\\\Documents\\\\Coding Projects\\\\New-Tab-V2\" && npm run refresh 2>&1)",
+      "WebFetch(domain:umami.is)"
+    ]
+  }
+}
