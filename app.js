@@ -126,7 +126,7 @@ const UMAMI_METRIC_KEY = 'ntv2-umami-metric';
 const UMAMI_PERIOD_KEY  = 'ntv2-umami-period';
 function getUmamiMetric() { return localStorage.getItem(UMAMI_METRIC_KEY) || 'visitors'; }
 function setUmamiMetric(m) { localStorage.setItem(UMAMI_METRIC_KEY, m); }
-function getUmamiPeriod() { return localStorage.getItem(UMAMI_PERIOD_KEY) || '24h'; }
+function getUmamiPeriod() { return localStorage.getItem(UMAMI_PERIOD_KEY) || 'month'; }
 function setUmamiPeriod(p) { localStorage.setItem(UMAMI_PERIOD_KEY, p); }
 
 const umamiCache = {}; // { [umamiId]: rawStatObj }
@@ -438,7 +438,7 @@ function initSortBar(links) {
     update();
     renderLinks(links, mode);
     initSearch(links, mode);
-    document.getElementById('search-input')?.focus();
+    if (window.innerWidth > 600) document.getElementById('search-input')?.focus();
   });
   update();
   sortBar.append(btn);
@@ -487,7 +487,7 @@ function initSortBar(links) {
 function initTabs() {
   const tabBtns = document.querySelectorAll('.tab-btn');
   if (!tabBtns.length) return;
-  const saved = sessionStorage.getItem('ntv2-active-tab');
+  const saved = localStorage.getItem('ntv2-active-tab');
   if (saved) {
     const btn = document.querySelector(`.tab-btn[data-tab="${saved}"]`);
     const panel = document.getElementById(`tab-${saved}`);
@@ -503,7 +503,7 @@ function initTabs() {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(`tab-${tab}`)?.classList.add('active');
-    sessionStorage.setItem('ntv2-active-tab', tab);
+    localStorage.setItem('ntv2-active-tab', tab);
   }));
 }
 
@@ -938,5 +938,5 @@ function renderFixtures(container, matches) {
     fetchUmamiStats(links);
   }
 
-  $('#search-input')?.focus();
+  if (window.innerWidth > 600) $('#search-input')?.focus();
 })();
