@@ -218,9 +218,15 @@ function renderLinks(links, mode = 'grouping') {
       container.append(group);
     }
 
-    // Then regular category groups
+    // Then regular category groups, sorted by total click count descending
     const groups = groupByCategory(links);
-    for (const [category, items] of groups) {
+    const counts = getClickCounts();
+    const sortedGroups = [...groups.entries()].sort((a, b) => {
+      const sumA = a[1].reduce((s, l) => s + (counts[l.url] || 0), 0);
+      const sumB = b[1].reduce((s, l) => s + (counts[l.url] || 0), 0);
+      return sumB - sumA;
+    });
+    for (const [category, items] of sortedGroups) {
       const group = el('div', { className: 'category-group' });
       group.append(el('h2', { className: 'category-header', textContent: category }));
       const grid = el('div', { className: 'links-grid' });
@@ -309,6 +315,13 @@ function makeLogoPlaceholder(name) {
   return el('div', { className: 'link-logo-placeholder', textContent: letter });
 }
 
+function isUrl(str) {
+  try {
+    const u = new URL(str);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch { return false; }
+}
+
 // ── Search ────────────────────────────────────────────────────────────────
 function initSearch(links, mode = getSortMode()) {
   const input = $('#search-input');
@@ -328,9 +341,13 @@ function initSearch(links, mode = getSortMode()) {
   fresh.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       const q = fresh.value.trim();
-      const url = q ? `https://www.google.com/search?q=${encodeURIComponent(q)}` : 'https://www.google.com/';
-      if (q) saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
-      window.open(url, '_blank');
+      if (isUrl(q)) {
+        window.open(q, '_blank');
+      } else {
+        const url = q ? `https://www.google.com/search?q=${encodeURIComponent(q)}` : 'https://www.google.com/';
+        if (q) saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
+        window.open(url, '_blank');
+      }
     }
   });
 }
@@ -341,9 +358,13 @@ function initSearchGoogleBtn() {
   if (!btn) return;
   btn.addEventListener('click', () => {
     const q = document.getElementById('search-input')?.value.trim() || '';
-    const url = q ? `https://www.google.com/search?q=${encodeURIComponent(q)}` : 'https://www.google.com/';
-    if (q) saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
-    window.open(url, '_blank');
+    if (isUrl(q)) {
+      window.open(q, '_blank');
+    } else {
+      const url = q ? `https://www.google.com/search?q=${encodeURIComponent(q)}` : 'https://www.google.com/';
+      if (q) saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
+      window.open(url, '_blank');
+    }
   });
 }
 
