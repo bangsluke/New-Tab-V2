@@ -240,9 +240,10 @@ main {
 
 @media (max-width: 600px) {
   .links-grid { grid-template-columns: 1fr; }
-  main { padding: 0 0.75rem 4rem; }
+  main { padding: 0 0.75rem 4rem; gap: 1rem; }
   .glass-card { padding: 1rem 0.9rem; }
   .link-card { padding: 0.5rem 0.75rem; min-height: 44px; }
+  .tab-panel.active { gap: 1rem; }
 }
 
 /* ── Link card ───────────────────────────────────────────────────────────── */
