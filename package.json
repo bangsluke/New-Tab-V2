@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Local browser new tab replacement page",
   "scripts": {
-    "refresh": "node scripts/refresh-links.js"
+    "refresh": "node scripts/refresh-links.js",
+    "netlify": "node scripts/netlify-build.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

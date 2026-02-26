@@ -24,12 +24,14 @@ New-Tab-V2/
 │   └── bg.jpg                  # Background image
 ├── config/
 │   └── config.yaml             # Source file path + heading name config
-├── data/                       # GENERATED — do not edit by hand
-│   ├── links.json
-│   └── umami-config.json
+├── data/
+│   ├── links.json              # GENERATED locally — committed (no secrets)
+│   ├── umami-config.json       # GENERATED — gitignored (contains API key)
+│   └── football-config.json    # GENERATED — gitignored (contains API key)
 ├── prompts/                    # Project planning docs
 ├── scripts/
-│   └── refresh-links.js        # Parses Obsidian .md → data/ JSON files
+│   ├── refresh-links.js        # Parses Obsidian .md → data/ JSON files (local)
+│   └── netlify-build.js        # Netlify build step — generates config JSONs from env vars
 ├── .env                        # Umami + football API keys (gitignored)
 ├── .env.example                # Template for .env
 ├── .gitignore
@@ -37,6 +39,7 @@ New-Tab-V2/
 │   └── settings.json           # Sets Live Server host to localhost (CORS fix)
 ├── app.js                      # Client-side ES module — all runtime logic
 ├── index.html                  # Page structure
+├── netlify.toml                # Netlify build config + security headers
 ├── package.json
 └── style.css                   # Glassmorphism styles
 ```
@@ -124,6 +127,25 @@ The Extra tab shows a live Premier League table (P / W / D / L / GD / Pts) and L
 Data is cached in `sessionStorage` and refreshed once per browser session.
 
 > **CORS note:** The football-data.org free tier only allows CORS requests from `http://localhost` on port 80. Any local dev server running on a different port (e.g. 3000, 5500) will be blocked. This is a local-only limitation — the page works correctly when deployed to Netlify or any hosted environment. To test locally on port 80, run `npx serve -l 80 .` (requires admin/elevated permissions).
+
+## Deploying to Netlify
+
+The site is fully static — Netlify serves it directly. The build step generates the two API config files from environment variables; `data/links.json` is pre-committed (no secrets).
+
+### Steps
+
+1. Push the repo to GitHub — verify `.gitignore` excludes `data/umami-config.json` and `data/football-config.json`
+2. Import the repo in Netlify — it will auto-detect `netlify.toml`
+3. In **Site configuration → Environment variables**, add:
+   - `UMAMI_API_KEY` — your Umami Cloud API key (mark as sensitive)
+   - `FOOTBALL_DATA_API_KEY` — your football-data.org API key (mark as sensitive)
+4. Trigger a deploy — Netlify runs `node scripts/netlify-build.js`, which writes the two config files, then serves the project root
+
+> **Updating links after deploy:** Run `npm run refresh` locally and push the updated `data/links.json`. Netlify will redeploy automatically if auto-deploy is enabled, or trigger a manual deploy.
+
+> **Testing the build locally:** Run `npm run netlify` (with env vars set in your shell or `.env`) to verify the config files are generated correctly before pushing.
+
+> **CORS note:** The football-data.org free tier allows CORS from any hosted domain. The `http://localhost` port-80 restriction only applies to local development — it works correctly on Netlify.
 
 ## Tech Stack
 
