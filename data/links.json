@@ -44,7 +44,7 @@
     "name": "Group Page Home",
     "url": "https://group-page.netlify.app/",
     "category": "Tits",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://group-page.netlify.app/assets/images/Page%20Icon.jpg",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -94,7 +94,7 @@
     "name": "Jon Stag",
     "url": "https://js-stag.netlify.app/",
     "category": "Misc Pages",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://js-stag.netlify.app/BigNightOut.JPG",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -124,7 +124,7 @@
     "name": "GPMO Documentation Site",
     "url": "https://gpmo.rle.international/",
     "category": "RLE International – GPMO",
-    "logo": "https://gpmo.rle.international/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/company-logos/RLE-International.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -154,7 +154,7 @@
     "name": "CoE Landing Page",
     "url": "https://stratamotiv.netlify.app/",
     "category": "RLE International – DVP – CoE",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://stratamotiv.netlify.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FStrataMotiv_Logo_NoBG_WhiteText.8740b60a.png&w=384&q=75",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -174,7 +174,7 @@
     "name": "Google Maps",
     "url": "https://www.google.co.uk/maps/@51.5286416,-0.1015987,11z",
     "category": "Travel",
-    "logo": "https://maps.google.com/favicon.ico",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/3840px-Google_Maps_Logo_2020.svg.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -214,7 +214,7 @@
     "name": "BBC News",
     "url": "https://www.bbc.co.uk/news",
     "category": "News",
-    "logo": "https://www.bbc.co.uk/favicon.ico",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/2/24/BBC_News_HD_Logo.svg/3840px-BBC_News_HD_Logo.svg.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -344,7 +344,7 @@
     "name": "Oli Stag",
     "url": "https://og-stag.netlify.app/",
     "category": "Misc Pages",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://og-stag.netlify.app/OG.JPG",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -364,7 +364,7 @@
     "name": "Old Portfolio (V1)",
     "url": "https://bangsluke-portfolio-v1.netlify.app/",
     "category": "Work – Portfolio",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-portfolio-v1.netlify.app/assets/images/OnlineProfilePicture.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -394,7 +394,7 @@
     "name": "DVP Initial Prototype Page",
     "url": "https://bangsluke-rle-dvp-prototype.netlify.app/",
     "category": "RLE International – DVP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/DVP-Tool.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -454,7 +454,7 @@
     "name": "BBC Sport",
     "url": "https://www.bbc.co.uk/sport",
     "category": "News",
-    "logo": "https://www.bbc.co.uk/favicon.ico",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/BBC_Sport_%282022%2C_alt_boxed%29.svg/1280px-BBC_Sport_%282022%2C_alt_boxed%29.svg.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -504,7 +504,7 @@
     "name": "Heroku",
     "url": "https://dashboard.heroku.com/apps",
     "category": "Coding/Hosting/DB",
-    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTGATpAB2e_Y9zlLDLo0jLeR4ISElOG6sswxg&s",
+    "logo": "https://www.nicepng.com/png/detail/223-2233246_heroku-logo-salesforce-heroku.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -524,7 +524,7 @@
     "name": "Airbnb Clone",
     "url": "https://bangsluke-airbnb-clone.netlify.app/",
     "category": "React Learning",
-    "logo": "https://www.airbnb.com/favicon.ico",
+    "logo": "https://react.dev/favicon.ico",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -534,7 +534,7 @@
     "name": "Big Lynn 2023",
     "url": "https://biglynn.netlify.app/2023",
     "category": "Golf",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://biglynn.netlify.app/images/Big-Lynn-Logo.svg",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -544,7 +544,7 @@
     "name": "Portfolio Card",
     "url": "https://bangsluke-portfolio-card.netlify.app/",
     "category": "Work – Portfolio",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-portfolio-v1.netlify.app/assets/images/OnlineProfilePicture.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -574,7 +574,7 @@
     "name": "DVP Links",
     "url": "https://rledvplinks.netlify.app/",
     "category": "RLE International – DVP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/DVP-Tool.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -661,16 +661,6 @@
   },
   {
     "order": 4,
-    "name": "First Portfolio Design (Archived)",
-    "url": "https://bangsluke-portfolio.netlify.app/archive/onlineportfolio",
-    "category": "Work – Portfolio",
-    "logo": "https://app.netlify.com/favicon.ico",
-    "projectLink": "",
-    "umamiId": null,
-    "umamiDashboardUrl": null
-  },
-  {
-    "order": 4,
     "name": "Project Finance Data Manager",
     "url": "https://apps.powerapps.com/play/e/9cb5bfc9-13df-e75e-98ff-a4782f9d0f48/a/2f37da68-ee87-4e33-854b-8598826a866f?tenantId=6422ff1a-f3b5-4450-9230-ad4241884bf4&hint=d7be4b55-aa62-4dec-8fe2-a4738bd94489&sourcetime=1707918756797",
     "category": "RLE International – GPMO",
@@ -744,7 +734,7 @@
     "name": "Snyk",
     "url": "https://app.snyk.io/org/bangsluke/",
     "category": "Coding/Hosting/DB",
-    "logo": "https://app.snyk.io/favicon.ico",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi7_aJfIZ_3m53kEvJsPsPPWITp42NSZJX3Q&s",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -755,16 +745,6 @@
     "url": "https://bangsluke-random-react-page.netlify.app/",
     "category": "React Learning",
     "logo": "https://react.dev/favicon.ico",
-    "projectLink": "",
-    "umamiId": null,
-    "umamiDashboardUrl": null
-  },
-  {
-    "order": 5,
-    "name": "Portfolio Redesign (Archived)",
-    "url": "https://bangsluke-portfolio.netlify.app/archive/onlineport2",
-    "category": "Work – Portfolio",
-    "logo": "https://app.netlify.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null

@@ -256,8 +256,6 @@ function buildLinkCard(link, opts = {}) {
   const card = el('a', {
     className: 'link-card',
     href: link.url || '#',
-    target: '_blank',
-    rel: 'noopener noreferrer',
   });
 
   // Track clicks
@@ -355,21 +353,37 @@ function initSearch(links, mode = getSortMode()) {
   input.replaceWith(fresh);
 
   const fuse = new Fuse(links, { keys: ['name', 'category'], threshold: 0.4 });
+  const searchBar = document.getElementById('search-bar');
+  const clearBtn = document.getElementById('search-clear-btn');
+
+  const updateClearVisibility = () => {
+    if (searchBar) searchBar.classList.toggle('has-value', fresh.value.trim().length > 0);
+  };
 
   fresh.addEventListener('input', () => {
     const q = fresh.value.trim();
+    updateClearVisibility();
     renderLinks(q ? fuse.search(q).map(r => r.item) : links, mode);
   });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      fresh.value = '';
+      fresh.focus();
+      updateClearVisibility();
+      renderLinks(links, mode);
+    });
+  }
 
   fresh.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       const q = fresh.value.trim();
       if (isUrl(q)) {
-        window.open(q, '_blank');
+        window.location.assign(q);
       } else {
         const url = q ? `https://www.google.com/search?q=${encodeURIComponent(q)}` : 'https://www.google.com/';
         if (q) saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
-        window.open(url, '_blank');
+        window.location.assign(url);
       }
     }
   });
@@ -382,11 +396,11 @@ function initSearchGoogleBtn() {
   btn.addEventListener('click', () => {
     const q = document.getElementById('search-input')?.value.trim() || '';
     if (isUrl(q)) {
-      window.open(q, '_blank');
+      window.location.assign(q);
     } else {
       const url = q ? `https://www.google.com/search?q=${encodeURIComponent(q)}` : 'https://www.google.com/';
       if (q) saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
-      window.open(url, '_blank');
+      window.location.assign(url);
     }
   });
 }
