@@ -145,6 +145,7 @@ function applyUmamiFromCache() {
   for (const [umamiId, stat] of Object.entries(umamiCache)) {
     const elem = document.getElementById(`umami-${umamiId}`);
     if (!elem) continue;
+    const isClickable = elem.classList.contains('umami-clickable');
     const curr = stat[metric] ?? 0;
     const prev = stat.comparison?.[metric] ?? 0;
     const diff = curr - prev;
@@ -153,13 +154,25 @@ function applyUmamiFromCache() {
     const trendCls  = diff > 0 ? 'up' : diff < 0 ? 'down' : 'neutral';
     const icons = { visitors: '👤', pageviews: '👁', visits: '🔁' };
     const icon = icons[metric] || '📊';
-    elem.className = `umami-stat ${trendCls}`;
+    elem.className = `umami-stat ${trendCls}${isClickable ? ' umami-clickable' : ''}`;
     elem.title = tooltip;
     elem.innerHTML =
       `<span class="umami-icon">${icon}</span>` +
       `<span class="umami-value">${curr}</span>` +
       `<span class="umami-diff ${trendCls}">${diffStr}</span>` +
       `<span class="umami-arrow ${trendCls}">${trendChar}</span>`;
+  }
+}
+
+async function requestPersistentStorage() {
+  if (!navigator.storage || !navigator.storage.persist) return;
+  try {
+    const granted = await navigator.storage.persist();
+    if (!granted) {
+      console.warn('Persistent storage not granted; click stats may be cleared by the browser.');
+    }
+  } catch (err) {
+    console.warn('Persistent storage request failed:', err && err.message ? err.message : err);
   }
 }
 
@@ -275,12 +288,22 @@ function buildLinkCard(link, opts = {}) {
 
   // Umami stat (loading placeholder; populated by applyUmamiFromCache)
   if (link.umamiId) {
-    nameRow.append(el('span', {
-      className: 'umami-stat neutral',
+    const hasDashboard = link.umamiDashboardUrl && isUrl(link.umamiDashboardUrl);
+    const umamiSpan = el('span', {
+      className: hasDashboard ? 'umami-stat neutral umami-clickable' : 'umami-stat neutral',
       id: `umami-${link.umamiId}`,
-      title: umamiTooltipText(),
+      title: hasDashboard
+        ? `${umamiTooltipText()} — click to open Umami dashboard`
+        : umamiTooltipText(),
       textContent: '…',
-    }));
+    });
+    if (hasDashboard) {
+      umamiSpan.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.open(link.umamiDashboardUrl, '_blank', 'noopener');
+      });
+    }
+    nameRow.append(umamiSpan);
   }
 
   // Click count — always shown (mouse icon + count)
@@ -933,6 +956,7 @@ function renderFixtures(container, matches) {
 // ── Init ──────────────────────────────────────────────────────────────────
 (async function init() {
   migrateClickCounts();
+  requestPersistentStorage();
   initFooter();
 
   if (window.lucide) {

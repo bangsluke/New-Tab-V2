@@ -1,20 +1,10 @@
 [
   {
-    "order": 0,
-    "name": "Old Homepage",
-    "url": "https://bangsluke.github.io/pages/Homepage.html",
-    "category": "Development",
-    "logo": "https://github.com/favicon.ico",
-    "projectLink": "",
-    "umamiId": null,
-    "umamiDashboardUrl": null
-  },
-  {
     "order": 1,
     "name": "Dorkinians Website (V3)",
     "url": "https://dorkiniansfcstats.co.uk/",
     "category": "Dorkinians",
-    "logo": "https://i.postimg.cc/rm1f3Kth/Dorkinians.png",
+    "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": "351bdc1f-abd3-4b55-8e6f-23b3693b13b4",
     "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/351bdc1f-abd3-4b55-8e6f-23b3693b13b4"
@@ -24,7 +14,7 @@
     "name": "Backend Server",
     "url": "https://bangsluke-backend-server-221df04e1ad6.herokuapp.com/",
     "category": "Development",
-    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTGATpAB2e_Y9zlLDLo0jLeR4ISElOG6sswxg&s",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Backend-Server.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -63,7 +53,7 @@
     "order": 1,
     "name": "GitHub",
     "url": "https://github.com/bangsluke",
-    "category": "Hosting/DB",
+    "category": "Coding/Hosting/DB",
     "logo": "https://github.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
@@ -94,7 +84,7 @@
     "name": "Golf Shot Distances",
     "url": "https://golf-shot-distances.netlify.app/",
     "category": "Golf",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Golf-Shot-Distances.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -114,7 +104,7 @@
     "name": "my travel journal",
     "url": "https://bangsluke-mytraveljournal.netlify.app/",
     "category": "Travel Journal",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Travel-Journal-Logo.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": "mytraveljournal]]"
@@ -124,7 +114,7 @@
     "name": "Portfolio (V2)",
     "url": "https://bangsluke-portfolio.netlify.app/",
     "category": "Work – Portfolio",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Portfolio-Site-V2.png",
     "projectLink": "",
     "umamiId": "fad6adfb-2b8b-4868-a0a9-59d4fd860488",
     "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/fad6adfb-2b8b-4868-a0a9-59d4fd860488"
@@ -144,7 +134,7 @@
     "name": "SDP",
     "url": "https://sdp.labs.rle.de/sdpweb/",
     "category": "RLE International – SDP",
-    "logo": "https://i.postimg.cc/hGkH1tyG/SDP.png",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -154,7 +144,7 @@
     "name": "DVP MUI Dashboard",
     "url": "https://dvp-prototype-dashboard.netlify.app/",
     "category": "RLE International – DVP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/DVP-Tool.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -260,11 +250,21 @@
     "umamiDashboardUrl": null
   },
   {
+    "order": 1,
+    "name": "Claude Billing",
+    "url": "https://platform.claude.com/settings/billing",
+    "category": "Coding Costs",
+    "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
     "order": 2,
     "name": "Dorkinians Admin Page",
     "url": "http://www.dorkiniansfcstats.co.uk/admin",
     "category": "Dorkinians",
-    "logo": "https://i.postimg.cc/rm1f3Kth/Dorkinians.png",
+    "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -274,7 +274,7 @@
     "name": "bangsluke Documentation",
     "url": "https://bangsluke-documentation.netlify.app/",
     "category": "Development",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Portfolio-Site-V2.png",
     "projectLink": "",
     "umamiId": "2d92e7a5-fbea-468d-88f0-7f80581efcf9",
     "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/2d92e7a5-fbea-468d-88f0-7f80581efcf9"
@@ -303,7 +303,7 @@
     "order": 2,
     "name": "Netlify",
     "url": "https://app.netlify.com/teams/bangsluke/projects",
-    "category": "Hosting/DB",
+    "category": "Coding/Hosting/DB",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Netlify_logo_%282%29.svg",
     "projectLink": "",
     "umamiId": null,
@@ -354,7 +354,7 @@
     "name": "my travel journal (archived)",
     "url": "https://bangsluke-my-travel-journal.netlify.app/",
     "category": "Travel Journal",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Travel-Journal-Logo.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -374,7 +374,7 @@
     "name": "Project Pipeline",
     "url": "https://apps.powerapps.com/play/e/9cb5bfc9-13df-e75e-98ff-a4782f9d0f48/a/c4b54ab2-1db0-4f44-8314-e1ca852d3f44?tenantId=6422ff1a-f3b5-4450-9230-ad4241884bf4&sourcetime=1701875569544&source=portal",
     "category": "RLE International – GPMO",
-    "logo": "https://i.postimg.cc/sf9hQprn/Project-Pipeline.png",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Project-Pipeline.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -384,7 +384,7 @@
     "name": "SDP Consultants Page",
     "url": "https://sdp-consultants-page.netlify.app/",
     "category": "RLE International – SDP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -404,7 +404,7 @@
     "name": "Sales Details ChatBot",
     "url": "https://rle-sales-details.netlify.app/",
     "category": "RLE International – DVP – CoE",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/RLEGPT.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -474,7 +474,7 @@
     "name": "Old Dorkinians Stats Website (V2)",
     "url": "https://dorkinians-stats-site.netlify.app",
     "category": "Dorkinians",
-    "logo": "https://i.postimg.cc/rm1f3Kth/Dorkinians.png",
+    "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -503,7 +503,7 @@
     "order": 3,
     "name": "Heroku",
     "url": "https://dashboard.heroku.com/apps",
-    "category": "Hosting/DB",
+    "category": "Coding/Hosting/DB",
     "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTGATpAB2e_Y9zlLDLo0jLeR4ISElOG6sswxg&s",
     "projectLink": "",
     "umamiId": null,
@@ -564,7 +564,7 @@
     "name": "SDP Pages",
     "url": "https://sdp-dev-sites.netlify.app/",
     "category": "RLE International – SDP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": "SDP Dev Sites]]"
@@ -631,9 +631,19 @@
   },
   {
     "order": 4,
+    "name": "Old Homepage",
+    "url": "https://bangsluke.github.io/pages/Homepage.html",
+    "category": "Development",
+    "logo": "https://github.com/favicon.ico",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 4,
     "name": "Neo4j Aura",
     "url": "https://console.neo4j.io/tools/query",
-    "category": "Hosting/DB",
+    "category": "Coding/Hosting/DB",
     "logo": "https://neo4j.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
@@ -674,7 +684,7 @@
     "name": "SDP Acronyms",
     "url": "https://sdp-dev-sites.netlify.app/pages/sdp-acronyms",
     "category": "RLE International – SDP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": "SDP Dev Sites]]"
@@ -694,7 +704,7 @@
     "name": "Todoist",
     "url": "https://app.todoist.com/app/today",
     "category": "Organisation",
-    "logo": "",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Todoist_logo.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -714,7 +724,27 @@
     "name": "Dorkinians Mobile Stats Tool",
     "url": "https://dorkinians-mobile-stats.netlify.app/",
     "category": "Dorkinians",
-    "logo": "https://i.postimg.cc/rm1f3Kth/Dorkinians.png",
+    "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 5,
+    "name": "Assets",
+    "url": "https://bangsluke-assets.netlify.app/",
+    "category": "Development",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/assets.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 5,
+    "name": "Snyk",
+    "url": "https://app.snyk.io/org/bangsluke/",
+    "category": "Coding/Hosting/DB",
+    "logo": "https://app.snyk.io/favicon.ico",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -754,7 +784,7 @@
     "name": "SDP Documentation",
     "url": "https://sdp-dev-sites.netlify.app/pages/sdp-documentation",
     "category": "RLE International – SDP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": "SDP Dev Sites]]"
@@ -784,7 +814,7 @@
     "name": "SDP Encyclopedia",
     "url": "https://sdp-dev-sites.netlify.app/pages/sdp-encyclopedia",
     "category": "RLE International – SDP",
-    "logo": "https://app.netlify.com/favicon.ico",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": "SDP Dev Sites]]"
