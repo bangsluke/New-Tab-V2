@@ -24,6 +24,7 @@
 /* ── Base ────────────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  background-color: #1E1527;
 }
 
 body {
@@ -31,10 +32,21 @@ body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-size: 15px;
   color: var(--text);
-  background:
+  background-color: #1E1527;
+  background-image:
     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-    url('assets/bg.jpg') center / cover no-repeat fixed;
+    url('assets/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
 }
 
 a {
@@ -114,6 +126,36 @@ main {
   box-shadow: 0 0 0 3px rgba(124, 158, 248, 0.25), var(--shadow);
 }
 
+.search-clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), color var(--transition), background var(--transition);
+}
+#search-bar.has-value .search-clear-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+.search-clear-btn:hover {
+  color: var(--text);
+  background: var(--glass-bg-hover);
+}
+
 .search-google-btn {
   display: flex;
   align-items: center;
@@ -148,6 +190,7 @@ main {
 
 @media (max-width: 600px) {
   #search-input { padding: 0.6rem 1rem; font-size: 0.95rem; }
+  .search-clear-btn { min-width: 40px; min-height: 40px; padding: 0.4rem; font-size: 1.1rem; }
   .search-google-btn { padding: 0.52rem 0.65rem; }
   .search-settings-btn { padding: 0.52rem 0.52rem; }
 }
