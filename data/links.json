@@ -734,7 +734,7 @@
     "name": "Snyk",
     "url": "https://app.snyk.io/org/bangsluke/",
     "category": "Coding/Hosting/DB",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi7_aJfIZ_3m53kEvJsPsPPWITp42NSZJX3Q&s",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTi7_aJfIZ_3m53kEvJsPsPPWITp42NSZJX3Q&s",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -791,6 +791,16 @@
   },
   {
     "order": 6,
+    "name": "localhost:3000",
+    "url": "http://localhost:3000/",
+    "category": "Development",
+    "logo": "https://static.thenounproject.com/png/384290-200.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 6,
     "name": "SDP Encyclopedia",
     "url": "https://sdp-dev-sites.netlify.app/pages/sdp-encyclopedia",
     "category": "RLE International – SDP",
@@ -811,6 +821,16 @@
   },
   {
     "order": 7,
+    "name": "localhost:4321",
+    "url": "http://localhost:4321/",
+    "category": "Development",
+    "logo": "https://static.thenounproject.com/png/384290-200.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 7,
     "name": "LinkedIn",
     "url": "https://www.linkedin.com/feed/",
     "category": "Social Media",
@@ -821,10 +841,30 @@
   },
   {
     "order": 8,
+    "name": "localhost:5174",
+    "url": "http://localhost:5174/",
+    "category": "Development",
+    "logo": "https://static.thenounproject.com/png/384290-200.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 8,
     "name": "Strava",
     "url": "https://www.strava.com/athletes/4308094",
     "category": "Social Media",
     "logo": "https://www.strava.com/favicon.ico",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 9,
+    "name": "localhost:5500",
+    "url": "http://localhost:5500/",
+    "category": "Development",
+    "logo": "https://static.thenounproject.com/png/384290-200.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
