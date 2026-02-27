@@ -348,6 +348,21 @@ main {
   font-size: 0.7rem; font-weight: 600; white-space: nowrap; flex-shrink: 0;
   cursor: default;
 }
+.umami-stat.umami-clickable {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--glass-border);
+  background-color: var(--glass-bg);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+.umami-stat.umami-clickable:hover {
+  background-color: var(--glass-bg-hover);
+  border-color: rgba(255, 255, 255, 0.55);
+}
 .umami-icon { font-size: 0.8rem; }
 .umami-value { color: var(--text); }
 .umami-diff.up, .umami-arrow.up { color: #4cdb87; }
