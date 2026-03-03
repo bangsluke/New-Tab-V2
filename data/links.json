@@ -251,9 +251,9 @@
   },
   {
     "order": 1,
-    "name": "Claude Billing",
-    "url": "https://platform.claude.com/settings/billing",
-    "category": "Coding Costs",
+    "name": "Claude",
+    "url": "https://claude.ai/new",
+    "category": "Coding",
     "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png",
     "projectLink": "",
     "umamiId": null,
@@ -465,6 +465,16 @@
     "url": "https://www.kraken.com/",
     "category": "Finances",
     "logo": "https://www.kraken.com/favicon.ico",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 2,
+    "name": "Claude Billing",
+    "url": "https://platform.claude.com/settings/billing",
+    "category": "Coding",
+    "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
