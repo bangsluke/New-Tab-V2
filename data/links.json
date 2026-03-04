@@ -260,6 +260,16 @@
     "umamiDashboardUrl": null
   },
   {
+    "order": 1,
+    "name": "Jack and Jill",
+    "url": "https://app.jackandjill.ai/jack/dashboard/home",
+    "category": "Job Search",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCP6GZ4mCzCj-YDBUtPMNI4hHeXzQRCchA4Q&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
     "order": 2,
     "name": "Dorkinians Admin Page",
     "url": "http://www.dorkiniansfcstats.co.uk/admin",
@@ -480,6 +490,16 @@
     "umamiDashboardUrl": null
   },
   {
+    "order": 2,
+    "name": "Welcome to the Jungle",
+    "url": "https://app.welcometothejungle.com",
+    "category": "Job Search",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_TffZFMcaE9DBcgSGGqIudQ-O3hUULeAvnA&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
     "order": 3,
     "name": "Old Dorkinians Stats Website (V2)",
     "url": "https://dorkinians-stats-site.netlify.app",
@@ -625,6 +645,16 @@
     "url": "https://www.paypal.com/paypalme/",
     "category": "Finances",
     "logo": "https://www.paypal.com/favicon.ico",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null
+  },
+  {
+    "order": 3,
+    "name": "Wellfound",
+    "url": "https://wellfound.com/jobs/home",
+    "category": "Job Search",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR4pkeRSOpzoyu6GITcXY6vVkinCy2IItDlA&s",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
