@@ -1286,7 +1286,6 @@ const CRYPTO_RANGES = {
   '24h': { label: '24H', days: 1 },
   '1m': { label: '1M', days: 30 },
   '1y': { label: '1Y', days: 365 },
-  all: { label: 'All', days: 'max' },
 };
 
 async function initCryptoBtcGbp() {
@@ -1297,7 +1296,6 @@ async function initCryptoBtcGbp() {
 
   let currentRange = '7d';
 
-  const header = el('div', { className: 'crypto-header' });
   const priceEl = el('span', { className: 'crypto-price', textContent: '—' });
   const deltaEl = el('span', { className: 'crypto-delta', textContent: '' });
   const rangeBar = el('div', { className: 'crypto-range-bar' });
@@ -1307,22 +1305,35 @@ async function initCryptoBtcGbp() {
     'aria-label': 'Toggle BTC chart',
   });
 
-  header.append(
-    el('span', { className: 'crypto-label', textContent: 'BTC → GBP' }),
-    priceEl,
-    deltaEl,
+  // Create the root SVG element in the proper namespace.
+  const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  chart.setAttribute('class', 'crypto-chart');
+  chart.setAttribute('viewBox', '0 0 100 40');
+  // Use uniform scaling so axis labels and line are not distorted.
+  chart.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+  section.innerHTML = '';
+
+  // Title row: "Crypto" + collapse toggle
+  const titleRow = el(
+    'div',
+    { className: 'crypto-title-row' },
+    el('h2', { className: 'category-header', textContent: 'Crypto' }),
     toggleBtn,
   );
 
-  const chart = el('svg', { className: 'crypto-chart', viewBox: '0 0 100 40', preserveAspectRatio: 'none' });
-
-  section.innerHTML = '';
-  section.append(
-    el('h2', { className: 'category-header', textContent: 'Crypto' }),
-    header,
-    rangeBar,
-    chart,
+  // Main header: pair label/price/delta with range buttons on one line
+  const headerMain = el('div', { className: 'crypto-header-main' });
+  headerMain.append(
+    el('span', { className: 'crypto-label', textContent: 'BTC → GBP' }),
+    priceEl,
+    deltaEl,
   );
+
+  const header = el('div', { className: 'crypto-header' });
+  header.append(headerMain, rangeBar);
+
+  section.append(titleRow, header, chart);
 
   const setRangeButtons = () => {
     rangeBar.innerHTML = '';
@@ -1367,7 +1378,11 @@ async function initCryptoBtcGbp() {
         series = json.prices || [];
         setSessionJSON(cacheKey, { prices: series });
       } catch (err) {
-        section.innerHTML = `<p class="section-placeholder">BTC data unavailable (${err.message}).</p>`;
+        console.warn('BTC data unavailable for range', currentRange, err);
+        priceEl.textContent = '—';
+        deltaEl.textContent = 'Data unavailable';
+        deltaEl.className = 'crypto-delta flat';
+        chart.innerHTML = '';
         return;
       }
     }
@@ -1378,6 +1393,7 @@ async function initCryptoBtcGbp() {
     }
 
     const prices = series.map(p => p[1]);
+    const times = series.map(p => p[0]);
     const latest = prices[prices.length - 1];
     const earlier = prices[0];
     const diff = latest - earlier;
@@ -1394,20 +1410,91 @@ async function initCryptoBtcGbp() {
     const span = max - min || 1;
 
     const points = prices.map((price, idx) => {
-      const x = (idx / (prices.length - 1 || 1)) * 100;
-      const y = 40 - ((price - min) / span) * 30 - 5;
+      const x = (idx / (prices.length - 1 || 1)) * 96 + 4; // leave 4px left padding for y-axis
+      const y = 38 - ((price - min) / span) * 28;          // fit between top (10) and bottom (38)
       return `${x.toFixed(2)},${y.toFixed(2)}`;
     });
 
     chart.innerHTML = '';
-    const poly = el('polyline', {
-      points: points.join(' '),
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '1.5',
-      className: 'crypto-line',
-    });
+
+    // Create the polyline in the proper SVG namespace so it actually renders.
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    poly.setAttribute('points', points.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', 'currentColor');
+    poly.setAttribute('stroke-width', '0.9');
+    poly.setAttribute('class', 'crypto-line');
     chart.append(poly);
+
+    // Axes and labels
+    const axisGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    axisGroup.setAttribute('class', 'crypto-axes');
+
+    // X axis line (bottom)
+    const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    xAxis.setAttribute('x1', '4');
+    xAxis.setAttribute('y1', '38');
+    xAxis.setAttribute('x2', '100');
+    xAxis.setAttribute('y2', '38');
+    xAxis.setAttribute('stroke', 'rgba(240,244,255,0.18)');
+    xAxis.setAttribute('stroke-width', '0.4');
+    axisGroup.append(xAxis);
+
+    // Y axis line (left)
+    const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    yAxis.setAttribute('x1', '4');
+    yAxis.setAttribute('y1', '5');
+    yAxis.setAttribute('x2', '4');
+    yAxis.setAttribute('y2', '35');
+    yAxis.setAttribute('stroke', 'rgba(240,244,255,0.18)');
+    yAxis.setAttribute('stroke-width', '0.4');
+    axisGroup.append(yAxis);
+
+    const fmtDate = (ts) =>
+      new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+    const firstTs = times[0];
+    const lastTs = times[times.length - 1];
+
+    // X axis labels
+    const xLabelStart = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    xLabelStart.setAttribute('x', '4');
+    xLabelStart.setAttribute('y', '39');
+    xLabelStart.setAttribute('text-anchor', 'start');
+    xLabelStart.setAttribute('font-size', '3');
+    xLabelStart.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    xLabelStart.textContent = fmtDate(firstTs);
+    axisGroup.append(xLabelStart);
+
+    const xLabelEnd = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    xLabelEnd.setAttribute('x', '98');
+    xLabelEnd.setAttribute('y', '39');
+    xLabelEnd.setAttribute('text-anchor', 'end');
+    xLabelEnd.setAttribute('font-size', '3');
+    xLabelEnd.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    xLabelEnd.textContent = fmtDate(lastTs);
+    axisGroup.append(xLabelEnd);
+
+    // Y axis labels (min / max)
+    const maxLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    maxLabel.setAttribute('x', '6');
+    maxLabel.setAttribute('y', '10');
+    maxLabel.setAttribute('text-anchor', 'start');
+    maxLabel.setAttribute('font-size', '3');
+    maxLabel.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    maxLabel.textContent = `£${max.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+    axisGroup.append(maxLabel);
+
+    const minLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    minLabel.setAttribute('x', '6');
+    minLabel.setAttribute('y', '35');
+    minLabel.setAttribute('text-anchor', 'start');
+    minLabel.setAttribute('font-size', '3');
+    minLabel.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    minLabel.textContent = `£${min.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+    axisGroup.append(minLabel);
+
+    chart.append(axisGroup);
   };
 
   void loadAndRenderRange();

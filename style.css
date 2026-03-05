@@ -1065,12 +1065,28 @@ main {
 }
 
 /* ── Crypto BTC → GBP ───────────────────────────────────────────────────── */
+.crypto-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
 .crypto-header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.crypto-header-main {
+  display: inline-flex;
   align-items: baseline;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  flex-wrap: wrap;
 }
 
 .crypto-label {
@@ -1092,7 +1108,7 @@ main {
 .crypto-range-bar {
   display: flex;
   gap: 0.35rem;
-  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .crypto-range-btn {
@@ -1115,15 +1131,18 @@ main {
 
 .crypto-chart {
   width: 100%;
-  height: 90px;
+  height: auto;
+  aspect-ratio: 5 / 2;
   margin-top: 0.25rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: var(--radius-sm);
 }
 
 .crypto-line {
-  stroke: var(--accent);
-  stroke-width: 2.5;
+  stroke: rgba(124, 158, 248, 0.95);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
 @media (max-width: 600px) {
@@ -1137,7 +1156,6 @@ main {
 }
 
 .crypto-toggle {
-  margin-left: auto;
   background: none;
   border: none;
   color: var(--text-muted);
@@ -1151,7 +1169,6 @@ main {
   color: var(--text);
 }
 
-#crypto-btc-gbp:not(.crypto-expanded) .crypto-range-bar,
 #crypto-btc-gbp:not(.crypto-expanded) .crypto-chart {
   display: none;
 }
