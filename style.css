@@ -24,7 +24,7 @@
 /* ── Base ────────────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
-  background-color: #1E1527;
+  background-color: #181426;
 }
 
 body {
@@ -32,7 +32,7 @@ body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-size: 15px;
   color: var(--text);
-  background-color: #1E1527;
+  background-color: #181426;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
     url('assets/bg.jpg');

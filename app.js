@@ -367,8 +367,16 @@ function initSearch(links, mode = getSortMode()) {
   if (!input) return;
 
   // Replace node to clear stale listeners when re-called after sort toggle
+  const wasFocused = document.activeElement === input;
+  const currentValue = input.value;
   const fresh = input.cloneNode(true);
   input.replaceWith(fresh);
+  if (typeof currentValue === 'string') {
+    fresh.value = currentValue;
+  }
+  if (wasFocused) {
+    fresh.focus();
+  }
 
   const fuse = new Fuse(links, { keys: ['name', 'category'], threshold: 0.4 });
   const searchBar = document.getElementById('search-bar');
@@ -1502,6 +1510,26 @@ async function initCryptoBtcGbp() {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 (async function init() {
+  const searchEl = document.getElementById('search-input');
+  if (searchEl) {
+    searchEl.focus();
+    searchEl.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const q = (e.currentTarget && e.currentTarget.value ? e.currentTarget.value : '').trim();
+      if (!q && !isUrl(q)) {
+        window.location.assign('https://www.google.com/');
+        return;
+      }
+      if (isUrl(q)) {
+        window.location.assign(q);
+      } else {
+        const url = `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+        saveRecentLink({ url, name: `🔍 ${q}`, logo: 'https://www.google.com/favicon.ico' });
+        window.location.assign(url);
+      }
+    });
+  }
+
   migrateClickCounts();
   initFooter();
   initTabs();
@@ -1514,11 +1542,6 @@ async function initCryptoBtcGbp() {
   } else {
     document.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
     setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500);
-  }
-
-  const searchEl = document.getElementById('search-input');
-  if (searchEl) {
-    searchEl.focus();
   }
 
   const links = await loadLinks();
