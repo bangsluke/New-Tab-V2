@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
   <title>New Tab</title>
   <!-- Favicons -->
   <link rel="icon" href="assets/favicon.ico" sizes="any" />
@@ -12,7 +12,7 @@
   <link rel="manifest" href="assets/site.webmanifest" />
   <!-- SEO -->
   <meta name="description" content="bangsluke's personal new tab — quick-access links, weather, and more." />
-  <meta name="theme-color" content="#1E1527" />
+  <meta name="theme-color" content="#1B1628" />
   <link rel="stylesheet" href="style.css" />
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
@@ -24,7 +24,13 @@
   <!-- Background handled via CSS -->
 
   <header>
-    <h1 class="welcome">Welcome <strong>@bangsluke</strong> to your new tab</h1>
+    <h1 class="welcome">
+      <span class="welcome-main">Welcome <strong>@bangsluke</strong> to your new tab</span>
+      <span class="welcome-clock">
+        <span id="welcome-clock-time">--:--</span>
+        <span id="welcome-clock-date">Loading date…</span>
+      </span>
+    </h1>
   </header>
 
   <main>
@@ -72,6 +78,15 @@
       </section>
       <section id="premier-league" class="glass-card" aria-label="Premier League table">
         <p class="section-placeholder">Loading Premier League table…</p>
+      </section>
+      <section id="github-contributions" class="glass-card" aria-label="GitHub contribution activity">
+        <p class="section-placeholder">Loading GitHub activity…</p>
+      </section>
+      <section id="bbc-headlines" class="glass-card" aria-label="BBC News and Sport headlines">
+        <p class="section-placeholder">Loading headlines…</p>
+      </section>
+      <section id="crypto-btc-gbp" class="glass-card" aria-label="Bitcoin price in GBP">
+        <p class="section-placeholder">Loading BTC → GBP…</p>
       </section>
     </div>
 

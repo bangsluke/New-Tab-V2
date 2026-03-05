@@ -264,7 +264,7 @@
     "name": "Jack and Jill",
     "url": "https://app.jackandjill.ai/jack/dashboard/home",
     "category": "Job Search",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCP6GZ4mCzCj-YDBUtPMNI4hHeXzQRCchA4Q&s",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcRCP6GZ4mCzCj-YDBUtPMNI4hHeXzQRCchA4Q&s",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -494,7 +494,7 @@
     "name": "Welcome to the Jungle",
     "url": "https://app.welcometothejungle.com",
     "category": "Job Search",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_TffZFMcaE9DBcgSGGqIudQ-O3hUULeAvnA&s",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcT_TffZFMcaE9DBcgSGGqIudQ-O3hUULeAvnA&s",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
@@ -654,7 +654,7 @@
     "name": "Wellfound",
     "url": "https://wellfound.com/jobs/home",
     "category": "Job Search",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR4pkeRSOpzoyu6GITcXY6vVkinCy2IItDlA&s",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTR4pkeRSOpzoyu6GITcXY6vVkinCy2IItDlA&s",
     "projectLink": "",
     "umamiId": null,
     "umamiDashboardUrl": null
