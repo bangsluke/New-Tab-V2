@@ -4,10 +4,14 @@
   "description": "Local browser new tab replacement page",
   "scripts": {
     "refresh": "node scripts/refresh-links.js",
-    "netlify": "node scripts/netlify-build.js"
+    "netlify": "node scripts/netlify-build.js",
+    "dev:netlify": "npx netlify dev"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
     "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^24.0.1"
   }
 }

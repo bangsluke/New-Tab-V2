@@ -2,3 +2,6 @@
 data/umami-config.json
 data/football-config.json
 node_modules/
+
+# Local Netlify folder
+.netlify

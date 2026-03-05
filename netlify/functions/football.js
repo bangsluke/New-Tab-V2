@@ -5,14 +5,14 @@
  *
  * Query params:
  *   type=standings  → GET /v4/competitions/PL/standings
- *   type=fixtures   → GET /v4/teams/64/matches?status=SCHEDULED&limit=5
+ *   type=fixtures   → GET /v4/teams/64/matches?status=SCHEDULED&limit=15
  */
 
 const LIVERPOOL_ID = 64;
 
 const ENDPOINTS = {
   standings: 'https://api.football-data.org/v4/competitions/PL/standings',
-  fixtures:  `https://api.football-data.org/v4/teams/${LIVERPOOL_ID}/matches?status=SCHEDULED&limit=5`,
+  fixtures:  `https://api.football-data.org/v4/teams/${LIVERPOOL_ID}/matches?status=SCHEDULED&limit=15`,
 };
 
 exports.handler = async (event) => {

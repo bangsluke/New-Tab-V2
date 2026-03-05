@@ -176,6 +176,24 @@ async function requestPersistentStorage() {
   }
 }
 
+// ── Session storage helpers ────────────────────────────────────────────────
+function getSessionJSON(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setSessionJSON(key, value) {
+  try {
+    sessionStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // ignore quota errors
+  }
+}
+
 async function loadLinks() {
   try {
     const res = await fetch('data/links.json');
@@ -796,6 +814,32 @@ function initFAB() {
   });
 }
 
+// ── Clock ─────────────────────────────────────────────────────────────────
+function initClock() {
+  const timeEl = document.getElementById('welcome-clock-time');
+  const dateEl = document.getElementById('welcome-clock-date');
+  if (!timeEl || !dateEl) return;
+
+  const update = () => {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString('en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    timeEl.textContent = timeStr;
+    dateEl.textContent = dateStr;
+  };
+
+  update();
+  setInterval(update, 30000);
+}
+
 // ── Footer year ───────────────────────────────────────────────────────────
 function initFooter() {
   const yearEl = $('#current-year');
@@ -864,6 +908,46 @@ async function initFootball() {
   }
 }
 
+function startNextKickoffCountdown(countdownEl, matches) {
+  if (!countdownEl || !matches || !matches.length) return;
+
+  const upcoming = matches
+    .map(match => ({ match, ts: new Date(match.utcDate).getTime() }))
+    .filter(x => !Number.isNaN(x.ts) && x.ts > Date.now())
+    .sort((a, b) => a.ts - b.ts)[0];
+
+  if (!upcoming) {
+    countdownEl.textContent = '';
+    return;
+  }
+
+  const target = upcoming.ts;
+
+  const formatDiff = (ms) => {
+    if (ms <= 0) return 'Kickoff now';
+    const totalMinutes = Math.floor(ms / 60000);
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    const mins = totalMinutes % 60;
+    const parts = [];
+    if (days) parts.push(`${days}d`);
+    if (hours || days) parts.push(`${hours}h`);
+    parts.push(`${mins}m`);
+    return `Next kickoff in ${parts.join(' ')}`;
+  };
+
+  const update = () => {
+    const now = Date.now();
+    countdownEl.textContent = formatDiff(target - now);
+  };
+
+  if (countdownEl._intervalId) {
+    clearInterval(countdownEl._intervalId);
+  }
+  update();
+  countdownEl._intervalId = setInterval(update, 60000);
+}
+
 function renderPLTable(container, table) {
   container.innerHTML = '';
   if (!table.length) return;
@@ -928,7 +1012,11 @@ function renderFixtures(container, matches) {
   container.innerHTML = '';
   if (!matches.length) return;
 
-  container.append(el('h2', { className: 'category-header', textContent: 'Liverpool — Upcoming Fixtures' }));
+  const header = el('div', { className: 'fixtures-header' });
+  const title = el('h2', { className: 'category-header', textContent: 'Liverpool — Upcoming Fixtures' });
+  const countdownEl = el('span', { className: 'fixture-countdown', textContent: '' });
+  header.append(title, countdownEl);
+  container.append(header);
 
   const list = el('div', { className: 'fixtures-list' });
   for (const match of matches) {
@@ -965,13 +1053,461 @@ function renderFixtures(container, matches) {
     list.append(card);
   }
   container.append(list);
+
+  startNextKickoffCountdown(countdownEl, matches);
+}
+
+// ── GitHub contribution heatmap ───────────────────────────────────────────
+const GITHUB_CACHE_KEY = 'ntv2-github-heatmap';
+
+async function initGithubHeatmap() {
+  const section = document.getElementById('github-contributions');
+  if (!section) return;
+
+  const cached = getSessionJSON(GITHUB_CACHE_KEY);
+  if (cached && Array.isArray(cached.days)) {
+    renderGithubHeatmap(section, cached.days, cached.generatedAt);
+    return;
+  }
+
+  section.innerHTML = '<p class="section-placeholder">Loading GitHub activity…</p>';
+
+  try {
+    const res = await fetch('/.netlify/functions/github-contribs');
+    let json = null;
+    try {
+      json = await res.json();
+    } catch {
+      json = null;
+    }
+
+    if (!res.ok) {
+      const msg =
+        (json && (json.error || json.message)) ||
+        `HTTP ${res.status}`;
+      throw new Error(msg);
+    }
+
+    const days = Array.isArray(json && json.days) ? json.days : [];
+
+    const now = new Date();
+    const payload = { days, generatedAt: now.toISOString() };
+    setSessionJSON(GITHUB_CACHE_KEY, payload);
+    renderGithubHeatmap(section, days, payload.generatedAt);
+  } catch (err) {
+    section.innerHTML = `<p class="section-placeholder">GitHub activity unavailable (${err.message}).</p>`;
+  }
+}
+
+function renderGithubHeatmap(section, days, generatedAt) {
+  section.innerHTML = '';
+
+  section.append(el('h2', { className: 'category-header', textContent: 'GitHub — Contributions' }));
+
+  const wrapper = el('div', { className: 'heatmap-wrapper' });
+  const monthsRow = el('div', { className: 'heatmap-months' });
+  const body = el('div', { className: 'heatmap-body' });
+  const weekdaysCol = el('div', { className: 'heatmap-weekdays' });
+  const grid = el('div', { className: 'heatmap-grid' });
+
+  // Weekday labels down the left
+  const weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  weekdayLabels.forEach((name) => {
+    weekdaysCol.append(el('span', { className: 'heatmap-weekday-label', textContent: name }));
+  });
+
+  // Month labels above the graph, one per week column where the month changes
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const weeks = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+
+  weeks.forEach((week, index) => {
+    const firstDay = week.find(Boolean);
+    if (!firstDay) {
+      monthsRow.append(el('span', { className: 'heatmap-month-label', textContent: '' }));
+      return;
+    }
+    const thisMonth = monthNames[new Date(firstDay.date + 'T00:00:00Z').getUTCMonth()];
+    let prevMonth = null;
+    if (index > 0) {
+      const prevFirst = weeks[index - 1].find(Boolean);
+      if (prevFirst) {
+        prevMonth = monthNames[new Date(prevFirst.date + 'T00:00:00Z').getUTCMonth()];
+      }
+    }
+    const label = index === 0 || thisMonth !== prevMonth ? thisMonth : '';
+    monthsRow.append(el('span', { className: 'heatmap-month-label', textContent: label }));
+  });
+
+  const maxCount = days.reduce((m, d) => Math.max(m, d.count), 0);
+  const bucket = (count) => {
+    if (count === 0) return 0;
+    if (maxCount <= 1) return 2;
+    const ratio = count / maxCount;
+    if (ratio > 0.75) return 4;
+    if (ratio > 0.5) return 3;
+    if (ratio > 0.25) return 2;
+    return 1;
+  };
+
+  days.forEach((d) => {
+    const dateObj = new Date(d.date + 'T00:00:00Z');
+    const label = dateObj.toLocaleDateString('en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    const level = bucket(d.count);
+    const cell = el('div', {
+      className: `heatmap-cell level-${level}`,
+      title: `${d.count} contribution${d.count === 1 ? '' : 's'} on ${label}`,
+    });
+    grid.append(cell);
+  });
+
+  body.append(weekdaysCol, grid);
+  wrapper.append(monthsRow, body);
+
+  const footer = el('div', { className: 'heatmap-footer' },
+    el('a', {
+      href: 'https://github.com/bangsluke',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      className: 'heatmap-link',
+    }, 'View GitHub profile'),
+    generatedAt
+      ? el('span', { className: 'heatmap-updated', textContent: `Updated ${new Date(generatedAt).toLocaleDateString('en-GB')}` })
+      : null,
+  );
+
+  section.append(wrapper, footer);
+}
+
+// ── BBC News & Sport headlines ────────────────────────────────────────────
+const BBC_HEADLINES_KEY = 'ntv2-bbc-headlines';
+
+async function initNewsHeadlines() {
+  const section = document.getElementById('bbc-headlines');
+  if (!section) return;
+
+  const cached = getSessionJSON(BBC_HEADLINES_KEY);
+  const now = Date.now();
+  if (cached && cached.expiresAt && cached.expiresAt > now) {
+    renderNewsHeadlines(section, cached);
+    return;
+  }
+
+  section.innerHTML = '<p class="section-placeholder">Loading headlines…</p>';
+
+  try {
+    const res = await fetch('/.netlify/functions/bbc-headlines');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    const payload = {
+      news: json.news || null,
+      sport: json.sport || null,
+      fetchedAt: now,
+      expiresAt: now + 60 * 60 * 1000, // 1 hour
+    };
+
+    setSessionJSON(BBC_HEADLINES_KEY, payload);
+    renderNewsHeadlines(section, payload);
+  } catch (err) {
+    section.innerHTML = `<p class="section-placeholder">Headlines unavailable (${err.message}).</p>`;
+  }
+}
+
+function renderNewsHeadlines(section, payload) {
+  section.innerHTML = '';
+
+  section.append(el('h2', { className: 'category-header', textContent: 'Headlines' }));
+
+  const list = el('div', { className: 'headline-list' });
+
+  const buildRow = (item, label) => {
+    if (!item) {
+      return el('div', { className: 'headline-row' },
+        el('span', { className: 'headline-source' },
+          el('span', {
+            className: `headline-logo-pill ${label === 'BBC News' ? 'news' : 'sport'}`,
+            textContent: 'BBC',
+          }),
+          document.createTextNode(label.replace('BBC ', ' ')),
+        ),
+        el('span', { className: 'headline-missing', textContent: 'No headline available.' }),
+      );
+    }
+    const when = item.pubDate ? timeAgo(new Date(item.pubDate)) : '';
+    return el('div', { className: 'headline-row' },
+      el('span', { className: 'headline-source' },
+        el('span', {
+          className: `headline-logo-pill ${label === 'BBC News' ? 'news' : 'sport'}`,
+          textContent: 'BBC',
+        }),
+        document.createTextNode(label.replace('BBC ', ' ')),
+      ),
+      el('a', {
+        className: 'headline-title',
+        href: item.link,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+      }, item.title),
+      when ? el('span', { className: 'headline-time', textContent: when }) : null,
+    );
+  };
+
+  list.append(
+    buildRow(payload.news, 'BBC News'),
+    buildRow(payload.sport, 'BBC Sport'),
+  );
+
+  section.append(list);
+}
+
+function timeAgo(date) {
+  const diffMs = Date.now() - date.getTime();
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins} min${mins === 1 ? '' : 's'} ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} h${hours === 1 ? '' : 's'} ago`;
+  const days = Math.round(hours / 24);
+  return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
+// ── Crypto — BTC → GBP ─────────────────────────────────────────────────────
+const CRYPTO_CACHE_KEY_PREFIX = 'ntv2-btc-gbp-';
+const CRYPTO_RANGES = {
+  '7d': { label: '7D', days: 7 },
+  '24h': { label: '24H', days: 1 },
+  '1m': { label: '1M', days: 30 },
+  '1y': { label: '1Y', days: 365 },
+};
+
+async function initCryptoBtcGbp() {
+  const section = document.getElementById('crypto-btc-gbp');
+  if (!section) return;
+
+  section.classList.add('crypto-expanded');
+
+  let currentRange = '7d';
+
+  const priceEl = el('span', { className: 'crypto-price', textContent: '—' });
+  const deltaEl = el('span', { className: 'crypto-delta', textContent: '' });
+  const rangeBar = el('div', { className: 'crypto-range-bar' });
+  const toggleBtn = el('button', {
+    className: 'crypto-toggle',
+    type: 'button',
+    'aria-label': 'Toggle BTC chart',
+  });
+
+  // Create the root SVG element in the proper namespace.
+  const chart = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  chart.setAttribute('class', 'crypto-chart');
+  chart.setAttribute('viewBox', '0 0 100 40');
+  // Use uniform scaling so axis labels and line are not distorted.
+  chart.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+  section.innerHTML = '';
+
+  // Title row: "Crypto" + collapse toggle
+  const titleRow = el(
+    'div',
+    { className: 'crypto-title-row' },
+    el('h2', { className: 'category-header', textContent: 'Crypto' }),
+    toggleBtn,
+  );
+
+  // Main header: pair label/price/delta with range buttons on one line
+  const headerMain = el('div', { className: 'crypto-header-main' });
+  headerMain.append(
+    el('span', { className: 'crypto-label', textContent: 'BTC → GBP' }),
+    priceEl,
+    deltaEl,
+  );
+
+  const header = el('div', { className: 'crypto-header' });
+  header.append(headerMain, rangeBar);
+
+  section.append(titleRow, header, chart);
+
+  const setRangeButtons = () => {
+    rangeBar.innerHTML = '';
+    Object.entries(CRYPTO_RANGES).forEach(([key, cfg]) => {
+      const btn = el('button', {
+        className: `crypto-range-btn${key === currentRange ? ' active' : ''}`,
+        type: 'button',
+        'data-range': key,
+      }, cfg.label);
+      btn.addEventListener('click', () => {
+        if (currentRange === key) return;
+        currentRange = key;
+        setRangeButtons();
+        void loadAndRenderRange();
+      });
+      rangeBar.append(btn);
+    });
+  };
+
+  setRangeButtons();
+
+  toggleBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  toggleBtn.addEventListener('click', () => {
+    section.classList.toggle('crypto-expanded');
+  });
+
+  const loadAndRenderRange = async () => {
+    const cfg = CRYPTO_RANGES[currentRange];
+    const cacheKey = `${CRYPTO_CACHE_KEY_PREFIX}${currentRange}`;
+    const cached = getSessionJSON(cacheKey);
+    let series;
+
+    if (cached && Array.isArray(cached.prices)) {
+      series = cached.prices;
+    } else {
+      try {
+        const daysParam = cfg.days;
+        const url = `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=gbp&days=${daysParam}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        series = json.prices || [];
+        setSessionJSON(cacheKey, { prices: series });
+      } catch (err) {
+        console.warn('BTC data unavailable for range', currentRange, err);
+        priceEl.textContent = '—';
+        deltaEl.textContent = 'Data unavailable';
+        deltaEl.className = 'crypto-delta flat';
+        chart.innerHTML = '';
+        return;
+      }
+    }
+
+    if (!series.length) {
+      section.innerHTML = '<p class="section-placeholder">No BTC data available.</p>';
+      return;
+    }
+
+    const prices = series.map(p => p[1]);
+    const times = series.map(p => p[0]);
+    const latest = prices[prices.length - 1];
+    const earlier = prices[0];
+    const diff = latest - earlier;
+    const pct = earlier ? (diff / earlier) * 100 : 0;
+    const sign = diff > 0 ? '+' : diff < 0 ? '−' : '';
+    const colourClass = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
+
+    priceEl.textContent = `£${latest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+    deltaEl.textContent = `${sign}${Math.abs(pct).toFixed(1)}%`;
+    deltaEl.className = `crypto-delta ${colourClass}`;
+
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    const span = max - min || 1;
+
+    const points = prices.map((price, idx) => {
+      const x = (idx / (prices.length - 1 || 1)) * 96 + 4; // leave 4px left padding for y-axis
+      const y = 38 - ((price - min) / span) * 28;          // fit between top (10) and bottom (38)
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    });
+
+    chart.innerHTML = '';
+
+    // Create the polyline in the proper SVG namespace so it actually renders.
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    poly.setAttribute('points', points.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', 'currentColor');
+    poly.setAttribute('stroke-width', '0.9');
+    poly.setAttribute('class', 'crypto-line');
+    chart.append(poly);
+
+    // Axes and labels
+    const axisGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    axisGroup.setAttribute('class', 'crypto-axes');
+
+    // X axis line (bottom)
+    const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    xAxis.setAttribute('x1', '4');
+    xAxis.setAttribute('y1', '38');
+    xAxis.setAttribute('x2', '100');
+    xAxis.setAttribute('y2', '38');
+    xAxis.setAttribute('stroke', 'rgba(240,244,255,0.18)');
+    xAxis.setAttribute('stroke-width', '0.4');
+    axisGroup.append(xAxis);
+
+    // Y axis line (left)
+    const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    yAxis.setAttribute('x1', '4');
+    yAxis.setAttribute('y1', '5');
+    yAxis.setAttribute('x2', '4');
+    yAxis.setAttribute('y2', '35');
+    yAxis.setAttribute('stroke', 'rgba(240,244,255,0.18)');
+    yAxis.setAttribute('stroke-width', '0.4');
+    axisGroup.append(yAxis);
+
+    const fmtDate = (ts) =>
+      new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+
+    const firstTs = times[0];
+    const lastTs = times[times.length - 1];
+
+    // X axis labels
+    const xLabelStart = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    xLabelStart.setAttribute('x', '4');
+    xLabelStart.setAttribute('y', '39');
+    xLabelStart.setAttribute('text-anchor', 'start');
+    xLabelStart.setAttribute('font-size', '3');
+    xLabelStart.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    xLabelStart.textContent = fmtDate(firstTs);
+    axisGroup.append(xLabelStart);
+
+    const xLabelEnd = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    xLabelEnd.setAttribute('x', '98');
+    xLabelEnd.setAttribute('y', '39');
+    xLabelEnd.setAttribute('text-anchor', 'end');
+    xLabelEnd.setAttribute('font-size', '3');
+    xLabelEnd.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    xLabelEnd.textContent = fmtDate(lastTs);
+    axisGroup.append(xLabelEnd);
+
+    // Y axis labels (min / max)
+    const maxLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    maxLabel.setAttribute('x', '6');
+    maxLabel.setAttribute('y', '10');
+    maxLabel.setAttribute('text-anchor', 'start');
+    maxLabel.setAttribute('font-size', '3');
+    maxLabel.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    maxLabel.textContent = `£${max.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+    axisGroup.append(maxLabel);
+
+    const minLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    minLabel.setAttribute('x', '6');
+    minLabel.setAttribute('y', '35');
+    minLabel.setAttribute('text-anchor', 'start');
+    minLabel.setAttribute('font-size', '3');
+    minLabel.setAttribute('fill', 'rgba(240,244,255,0.6)');
+    minLabel.textContent = `£${min.toLocaleString('en-GB', { maximumFractionDigits: 0 })}`;
+    axisGroup.append(minLabel);
+
+    chart.append(axisGroup);
+  };
+
+  void loadAndRenderRange();
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
 (async function init() {
   migrateClickCounts();
-  requestPersistentStorage();
   initFooter();
+  initTabs();
+  initFAB();
+  initClock();
+  initSearchGoogleBtn();
 
   if (window.lucide) {
     lucide.createIcons();
@@ -980,12 +1516,10 @@ function renderFixtures(container, matches) {
     setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500);
   }
 
-  initTabs();
-  initFAB();
-  initWeather();
-  initFootball();
-
-  initSearchGoogleBtn();
+  const searchEl = document.getElementById('search-input');
+  if (searchEl) {
+    searchEl.focus();
+  }
 
   const links = await loadLinks();
   if (links.length) {
@@ -997,5 +1531,10 @@ function renderFixtures(container, matches) {
     fetchUmamiStats(links);
   }
 
-  if (window.innerWidth > 600) $('#search-input')?.focus();
+  requestPersistentStorage();
+  initWeather();
+  initFootball();
+  initGithubHeatmap();
+  initNewsHeadlines();
+  initCryptoBtcGbp();
 })();
