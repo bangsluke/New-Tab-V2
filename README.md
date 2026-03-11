@@ -117,10 +117,10 @@ Then visit `http://localhost:3000`.
 
 ## Obsidian Table Format
 
-The script expects a markdown table under the configured heading with these exact columns:
+The script expects a markdown table under the configured heading with these columns:
 
-| Order | Link Name | Link | Grouping | Logo URL | Project Link | Umami Tracking Link |
-|-------|-----------|------|----------|----------|--------------|---------------------|
+| Order | Link Name | Link | Grouping | Logo URL | Project Link | Umami Tracking Link | Tags |
+|-------|-----------|------|----------|----------|--------------|---------------------|------|
 
 - **Order** — numeric sort order
 - **Link Name** — display name shown on the card
@@ -129,6 +129,7 @@ The script expects a markdown table under the configured heading with these exac
 - **Logo URL** — circular icon image URL (optional)
 - **Project Link** — secondary link shown as "Project" below the name (optional)
 - **Umami Tracking Link** — full Umami dashboard URL, e.g. `https://cloud.umami.is/analytics/eu/websites/{uuid}` (optional)
+- **Tags** — optional tags used for search, e.g. `Insurance, Finance` or `#Insurance #Finance`; these are normalised into a `tags: string[]` field in `data/links.json`
 
 ## Configuration Reference
 
@@ -206,7 +207,7 @@ The site is fully static — Netlify serves it directly. The build step generate
 
 | Concern | Solution |
 |---------|----------|
-| Fuzzy search | [Fuse.js](https://fusejs.io/) v7 (CDN) |
+| Fuzzy / tagged search | [Fuse.js](https://fusejs.io/) v7 (CDN), plus direct matching over name, category, and tags |
 | Icons | [Lucide](https://lucide.dev/) (CDN) |
 | Weather | [Open-Meteo](https://open-meteo.com/) (free, no key) |
 | Reverse geocoding | [Nominatim / OpenStreetMap](https://nominatim.org/) (free, no key) |

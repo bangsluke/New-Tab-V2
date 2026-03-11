@@ -378,7 +378,16 @@ function initSearch(links, mode = getSortMode()) {
     fresh.focus();
   }
 
-  const fuse = new Fuse(links, { keys: ['name', 'category'], threshold: 0.4 });
+  const fuse = new Fuse(links, {
+    keys: [
+      'name',
+      'category',
+      // tags is an optional string[]; include it in fuzzy search
+      'tags',
+    ],
+    threshold: 0.35,
+    ignoreLocation: true,
+  });
   const searchBar = document.getElementById('search-bar');
   const clearBtn = document.getElementById('search-clear-btn');
 
@@ -389,7 +398,62 @@ function initSearch(links, mode = getSortMode()) {
   fresh.addEventListener('input', () => {
     const q = fresh.value.trim();
     updateClearVisibility();
-    renderLinks(q ? fuse.search(q).map(r => r.item) : links, mode);
+
+    if (!q) {
+      renderLinks(links, mode);
+      return;
+    }
+
+    const qLower = q.toLowerCase();
+
+    // First, build a list of direct matches ranked by how closely they match:
+    // 3 = exact, 2 = prefix, 1 = substring, across name, category, and tags.
+    const directScored = [];
+    for (const link of links) {
+      const fields = [
+        link.name || '',
+        link.category || '',
+        ...(Array.isArray(link.tags) ? link.tags : []),
+      ];
+
+      let bestScore = 0;
+      for (const field of fields) {
+        const value = String(field || '').toLowerCase();
+        if (!value) continue;
+        if (value === qLower) {
+          bestScore = 3;
+          break;
+        }
+        if (value.startsWith(qLower)) {
+          if (bestScore < 2) bestScore = 2;
+        } else if (value.includes(qLower)) {
+          if (bestScore < 1) bestScore = 1;
+        }
+      }
+
+      if (bestScore > 0) {
+        directScored.push({ link, score: bestScore });
+      }
+    }
+
+    directScored.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const nameA = (a.link.name || '').toLowerCase();
+      const nameB = (b.link.name || '').toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+
+    const directMatches = directScored.map(x => x.link);
+    const directKeySet = new Set(directMatches.map(l => l.url || l.name || ''));
+
+    // Then, get fuzzy matches from Fuse and append any that weren't direct matches.
+    const fuzzyMatches = fuse.search(q).map(r => r.item);
+    const remainingFuzzy = fuzzyMatches.filter(l => {
+      const key = l.url || l.name || '';
+      return key && !directKeySet.has(key);
+    });
+
+    renderLinks([...directMatches, ...remainingFuzzy], mode);
   });
 
   if (clearBtn) {
