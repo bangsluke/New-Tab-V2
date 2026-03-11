@@ -7,7 +7,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": "351bdc1f-abd3-4b55-8e6f-23b3693b13b4",
-    "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/351bdc1f-abd3-4b55-8e6f-23b3693b13b4"
+    "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/351bdc1f-abd3-4b55-8e6f-23b3693b13b4",
+    "tags": []
   },
   {
     "order": 1,
@@ -17,7 +18,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Backend-Server.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -27,7 +29,12 @@
     "logo": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "SoL]]"
+    "umamiDashboardUrl": "SoL]]",
+    "tags": [
+      "Spreadsheet",
+      "of",
+      "Life"
+    ]
   },
   {
     "order": 1,
@@ -37,7 +44,8 @@
     "logo": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -47,7 +55,8 @@
     "logo": "https://group-page.netlify.app/assets/images/Page%20Icon.jpg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -57,7 +66,8 @@
     "logo": "https://github.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -67,7 +77,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/8/87/Sql_data_base_with_logo.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -77,7 +88,8 @@
     "logo": "https://react.dev/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -87,7 +99,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Golf-Shot-Distances.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -97,7 +110,8 @@
     "logo": "https://js-stag.netlify.app/BigNightOut.JPG",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -107,7 +121,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Travel-Journal-Logo.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "mytraveljournal]]"
+    "umamiDashboardUrl": "mytraveljournal]]",
+    "tags": []
   },
   {
     "order": 1,
@@ -117,7 +132,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Portfolio-Site-V2.png",
     "projectLink": "",
     "umamiId": "fad6adfb-2b8b-4868-a0a9-59d4fd860488",
-    "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/fad6adfb-2b8b-4868-a0a9-59d4fd860488"
+    "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/fad6adfb-2b8b-4868-a0a9-59d4fd860488",
+    "tags": []
   },
   {
     "order": 1,
@@ -127,7 +143,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/company-logos/RLE-International.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -137,7 +154,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -147,7 +165,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/DVP-Tool.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -157,7 +176,8 @@
     "logo": "https://stratamotiv.netlify.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FStrataMotiv_Logo_NoBG_WhiteText.8740b60a.png&w=384&q=75",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -167,7 +187,8 @@
     "logo": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -177,7 +198,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Google_Maps_Logo_2020.svg/3840px-Google_Maps_Logo_2020.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -187,7 +209,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/960px-2023_Facebook_icon.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -197,7 +220,8 @@
     "logo": "https://open.spotify.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -207,7 +231,8 @@
     "logo": "https://www.amazon.co.uk/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -217,17 +242,30 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/2/24/BBC_News_HD_Logo.svg/3840px-BBC_News_HD_Logo.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
-    "name": "NatWest",
-    "url": "https://www.onlinebanking.natwest.com/",
+    "name": "Monzo",
+    "url": "https://monzo.com",
     "category": "Finances",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/8/87/Natwest-logo.jpg",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcST0b2Bl-AIEKJBs58OQlZ85OK4qPr8-5GBaw&s",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 1,
+    "name": "Toucan Giving",
+    "url": "https://www.toucangiving.com/toucan-donate",
+    "category": "Charity",
+    "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQEI0CL4j0bVmg/company-logo_200_200/B4EZfFHy0gGwAI-/0/1751358844703/toucangiving1_logo?e=2147483647&v=beta&t=QWtrqX8XRR4g2k_TI8GRxQiCkISFz1dMAOTXpPOEeWA",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -237,17 +275,21 @@
     "logo": "https://www.vodafone.co.uk/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Phone"
+    ]
   },
   {
     "order": 1,
-    "name": "Just Eat",
-    "url": "https://www.just-eat.co.uk/area/cm3-chelmsford",
-    "category": "Food",
-    "logo": "https://www.just-eat.co.uk/favicon.ico",
+    "name": "Asda Delivery",
+    "url": "https://www.asda.com/",
+    "category": "Food/Takeaway",
+    "logo": "https://cdn.freebiesupply.com/logos/large/2x/asda-logo-svg-vector.svg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -257,7 +299,8 @@
     "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 1,
@@ -267,7 +310,80 @@
     "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcRCP6GZ4mCzCj-YDBUtPMNI4hHeXzQRCchA4Q&s",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 1,
+    "name": "Medivet",
+    "url": "https://www.medivetgroup.com/",
+    "category": "Pets",
+    "logo": "https://www.milfordhaven-tc.gov.wales/wp-content/uploads/sites/115/2024/12/medivet-logo.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 1,
+    "name": "Medium",
+    "url": "https://medium.com/",
+    "category": "Reading",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcSHixgbAk6KM6QRJQmf8z_NhdiEkU0y935Iig&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Coding"
+    ]
+  },
+  {
+    "order": 1,
+    "name": "Liverpool FC",
+    "url": "https://www.liverpoolfc.com/",
+    "category": "Sport",
+    "logo": "https://brandlogos.net/wp-content/uploads/2025/02/liverpool_f.c.-logo_brandlogos.net_vr9dx-300x548.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Football"
+    ]
+  },
+  {
+    "order": 1,
+    "name": "Netflix",
+    "url": "https://www.netflix.com/browse",
+    "category": "TV",
+    "logo": "https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/15844974/netflixlogo.0.0.1466448626.png?quality=90&strip=all&crop=1.2535702951444%2C0%2C97.492859409711%2C100&w=2400",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 1,
+    "name": "Chelmsford City Council",
+    "url": "https://www.chelmsford.gov.uk/",
+    "category": "House",
+    "logo": "https://inscribecreative.co.uk/wp-content/uploads/2012/06/new-chelmsford-city-logo.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 1,
+    "name": "Uber",
+    "url": "https://www.uber.com/gb/en/",
+    "category": "Transport",
+    "logo": "https://download.logo.wine/logo/Uber/Uber-Logo.wine.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Taxi"
+    ]
   },
   {
     "order": 2,
@@ -277,7 +393,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -287,7 +404,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Portfolio-Site-V2.png",
     "projectLink": "",
     "umamiId": "2d92e7a5-fbea-468d-88f0-7f80581efcf9",
-    "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/2d92e7a5-fbea-468d-88f0-7f80581efcf9"
+    "umamiDashboardUrl": "https://cloud.umami.is/analytics/eu/websites/2d92e7a5-fbea-468d-88f0-7f80581efcf9",
+    "tags": []
   },
   {
     "order": 2,
@@ -297,7 +415,8 @@
     "logo": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "SoL]]"
+    "umamiDashboardUrl": "SoL]]",
+    "tags": []
   },
   {
     "order": 2,
@@ -307,7 +426,8 @@
     "logo": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -317,7 +437,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/9/97/Netlify_logo_%282%29.svg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -327,7 +448,8 @@
     "logo": "https://app.netlify.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -337,7 +459,8 @@
     "logo": "https://react.dev/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -347,7 +470,8 @@
     "logo": "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -357,7 +481,8 @@
     "logo": "https://og-stag.netlify.app/OG.JPG",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -367,7 +492,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Travel-Journal-Logo.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -377,7 +503,8 @@
     "logo": "https://bangsluke-portfolio-v1.netlify.app/assets/images/OnlineProfilePicture.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -387,7 +514,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Project-Pipeline.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -397,7 +525,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -407,7 +536,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/DVP-Tool.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -417,7 +547,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/RLEGPT.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -427,7 +558,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/500px-Google_Calendar_icon_%282020%29.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -437,7 +569,8 @@
     "logo": "https://www.airbnb.co.uk/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -447,7 +580,8 @@
     "logo": "https://www.citypng.com/public/uploads/preview/green-whatsapp-logo-phone-call-icon-704081694688104qpuonypjkg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -457,7 +591,8 @@
     "logo": "https://soundcloud.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -467,17 +602,43 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/BBC_Sport_%282022%2C_alt_boxed%29.svg/1280px-BBC_Sport_%282022%2C_alt_boxed%29.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
-    "name": "Kraken",
-    "url": "https://www.kraken.com/",
+    "name": "NatWest",
+    "url": "https://www.onlinebanking.natwest.com/",
     "category": "Finances",
-    "logo": "https://www.kraken.com/favicon.ico",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/8/87/Natwest-logo.jpg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 2,
+    "name": "Octopus Energy",
+    "url": "https://octopus.energy/dashboard/new/accounts/A-F7935769/dashboard",
+    "category": "Bills",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcRB7XgKn5UMc4tON7-VtHlgC3nmlDE5CG7AEw&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Utilities"
+    ]
+  },
+  {
+    "order": 2,
+    "name": "Just Eat",
+    "url": "https://www.just-eat.co.uk/area/cm3-chelmsford",
+    "category": "Food/Takeaway",
+    "logo": "https://www.just-eat.co.uk/favicon.ico",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -487,7 +648,8 @@
     "logo": "https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claude-color.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 2,
@@ -497,7 +659,69 @@
     "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcT_TffZFMcaE9DBcgSGGqIudQ-O3hUULeAvnA&s",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 2,
+    "name": "Petlog",
+    "url": "https://www.petlog.org.uk/profile/manage-pets/",
+    "category": "Pets",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcRCow4yeDXCpV_q8Z3RV13p8_SWbbeeoe56UQ&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 2,
+    "name": "Dev.to",
+    "url": "https://dev.to/",
+    "category": "Reading",
+    "logo": "https://d2fltix0v2e0sb.cloudfront.net/dev-black.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Coding"
+    ]
+  },
+  {
+    "order": 2,
+    "name": "Fantasy Premier League",
+    "url": "https://fantasy.premierleague.com/",
+    "category": "Sport",
+    "logo": "https://fantasy.premierleague.com/img/share/facebook-share.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Football"
+    ]
+  },
+  {
+    "order": 2,
+    "name": "Amazon Prime",
+    "url": "https://www.amazon.co.uk/Amazon-Video/b/ref=sv_uk_8?ie=UTF8&node=3010085031",
+    "category": "TV",
+    "logo": "https://images.seeklogo.com/logo-png/50/2/amazon-prime-video-logo-png_seeklogo-505887.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 2,
+    "name": "National Rail",
+    "url": "https://www.nationalrail.co.uk/",
+    "category": "Transport",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcQkbFSgAeBA60uLGTz31BZ1CETfR1leAyqcHw&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Train"
+    ]
   },
   {
     "order": 3,
@@ -507,7 +731,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -517,7 +742,8 @@
     "logo": "https://github.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "New Tab]]"
+    "umamiDashboardUrl": "New Tab]]",
+    "tags": []
   },
   {
     "order": 3,
@@ -527,7 +753,8 @@
     "logo": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -537,7 +764,8 @@
     "logo": "https://www.nicepng.com/png/detail/223-2233246_heroku-logo-salesforce-heroku.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -547,7 +775,8 @@
     "logo": "https://github.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -557,7 +786,8 @@
     "logo": "https://react.dev/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -567,7 +797,8 @@
     "logo": "https://biglynn.netlify.app/images/Big-Lynn-Logo.svg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -577,7 +808,8 @@
     "logo": "https://bangsluke-portfolio-v1.netlify.app/assets/images/OnlineProfilePicture.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -587,7 +819,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/c/cf/New_Power_BI_Logo.svg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -597,7 +830,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "SDP Dev Sites]]"
+    "umamiDashboardUrl": "SDP Dev Sites]]",
+    "tags": []
   },
   {
     "order": 3,
@@ -607,7 +841,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/DVP-Tool.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -617,7 +852,8 @@
     "logo": "https://drive.google.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -627,7 +863,8 @@
     "logo": "https://www.skyscanner.net/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -637,17 +874,43 @@
     "logo": "https://www.reddit.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
-    "name": "PayPal",
-    "url": "https://www.paypal.com/paypalme/",
+    "name": "Kraken",
+    "url": "https://www.kraken.com/",
     "category": "Finances",
-    "logo": "https://www.paypal.com/favicon.ico",
+    "logo": "https://www.kraken.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 3,
+    "name": "Essex & Suffolk Water",
+    "url": "https://www.eswater.co.uk/",
+    "category": "Bills",
+    "logo": "https://www.eyesuffolk.org/wp-content/uploads/2022/11/essex.water_.logo_.jpg",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Utilities"
+    ]
+  },
+  {
+    "order": 3,
+    "name": "Deliveroo",
+    "url": "https://deliveroo.co.uk/",
+    "category": "Food/Takeaway",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcT335uDIndcMrty1_mX4FqAcAgVxgJ_iCz0gg&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 3,
@@ -657,7 +920,58 @@
     "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTR4pkeRSOpzoyu6GITcXY6vVkinCy2IItDlA&s",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 3,
+    "name": "Waggel",
+    "url": "https://www.waggel.co.uk/",
+    "category": "Pets",
+    "logo": "https://media.fintastico.com/images/logos/WAGG2.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Insurance"
+    ]
+  },
+  {
+    "order": 3,
+    "name": "TheGrint",
+    "url": "https://www.thegrint.com/",
+    "category": "Sport",
+    "logo": "https://play-lh.googleusercontent.com/3LxTmzoK5ZGWhoeA2I1b91kxo5z3jNWGtnvjFwXBTlXiPuOQ1ZjuC68h0mcBRkwQBt8",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Golf"
+    ]
+  },
+  {
+    "order": 3,
+    "name": "BBC iPlayer",
+    "url": "https://www.bbc.co.uk/iplayer",
+    "category": "TV",
+    "logo": "https://m.media-amazon.com/images/I/41e198uxXxL.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 3,
+    "name": "Trainline",
+    "url": "https://www.thetrainline.com/",
+    "category": "Transport",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcQTItPty5GbgUVwVHbuOi4XSMJqURkoA5kfXA&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Train"
+    ]
   },
   {
     "order": 4,
@@ -667,7 +981,8 @@
     "logo": "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -677,7 +992,8 @@
     "logo": "https://github.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -687,7 +1003,8 @@
     "logo": "https://neo4j.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -697,7 +1014,8 @@
     "logo": "https://react.dev/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -707,7 +1025,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Powerapps-logo.svg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -717,7 +1036,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "SDP Dev Sites]]"
+    "umamiDashboardUrl": "SDP Dev Sites]]",
+    "tags": []
   },
   {
     "order": 4,
@@ -727,7 +1047,8 @@
     "logo": "https://neo4j.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -737,7 +1058,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Todoist_logo.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 4,
@@ -747,7 +1069,54 @@
     "logo": "https://www.youtube.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 4,
+    "name": "PayPal",
+    "url": "https://www.paypal.com/paypalme/",
+    "category": "Finances",
+    "logo": "https://www.paypal.com/favicon.ico",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 4,
+    "name": "MyGuardian",
+    "url": "https://app.guardian1821.co.uk/policy",
+    "category": "Bills",
+    "logo": "https://media.licdn.com/dms/image/v2/C4E0BAQG5TM6usqU8jg/company-logo_200_200/company-logo_200_200/0/1631323788841?e=2147483647&v=beta&t=jwQ0Q4YyNfoFL-0ITWEjte8arFwSagoQU8bBkJX-3N4",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Insurance"
+    ]
+  },
+  {
+    "order": 4,
+    "name": "Uber Eats",
+    "url": "https://www.ubereats.com/gb",
+    "category": "Food/Takeaway",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcQYlDm8X-q1-q358-Oe0h5YRP3pUgopTaXbTA&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 4,
+    "name": "ITV",
+    "url": "https://www.itv.com/",
+    "category": "TV",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/9/92/ITV_logo_2013.svg/1280px-ITV_logo_2013.svg.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 5,
@@ -757,7 +1126,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/company-logos/Dorkinians.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 5,
@@ -767,7 +1137,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/assets.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 5,
@@ -777,7 +1148,8 @@
     "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcTi7_aJfIZ_3m53kEvJsPsPPWITp42NSZJX3Q&s",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 5,
@@ -787,7 +1159,8 @@
     "logo": "https://react.dev/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 5,
@@ -797,7 +1170,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Powerapps-logo.svg",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 5,
@@ -807,7 +1181,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "SDP Dev Sites]]"
+    "umamiDashboardUrl": "SDP Dev Sites]]",
+    "tags": []
   },
   {
     "order": 5,
@@ -817,7 +1192,43 @@
     "logo": "https://twitter.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 5,
+    "name": "St. James's Place",
+    "url": "https://online.sjp.co.uk/s/login",
+    "category": "Finances",
+    "logo": "https://cdn.moneymarketing.co.uk/content/uploads/2022/01/28092025/SJP-new-logo-200x153.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 5,
+    "name": "plusnet",
+    "url": "https://www.plus.net/",
+    "category": "Bills",
+    "logo": "https://download.logo.wine/logo/Plusnet/Plusnet-Logo.wine.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Internet"
+    ]
+  },
+  {
+    "order": 5,
+    "name": "Channel 4",
+    "url": "https://www.channel4.com/on-demand",
+    "category": "TV",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Channel_4_Logo_2023.svg/960px-Channel_4_Logo_2023.svg.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 6,
@@ -827,7 +1238,8 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d5/FA_crest_2009.svg/960px-FA_crest_2009.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 6,
@@ -837,7 +1249,8 @@
     "logo": "https://static.thenounproject.com/png/384290-200.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 6,
@@ -847,7 +1260,8 @@
     "logo": "https://media2.dev.to/dynamic/image/width=1000,height=420,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fi%2F502lyg12hwqjjpymtr5g.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 6,
@@ -857,7 +1271,8 @@
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/SDP.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": "SDP Dev Sites]]"
+    "umamiDashboardUrl": "SDP Dev Sites]]",
+    "tags": []
   },
   {
     "order": 6,
@@ -867,7 +1282,54 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/960px-Instagram_logo_2016.svg.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 6,
+    "name": "National Lottery",
+    "url": "https://www.national-lottery.co.uk/",
+    "category": "Finances",
+    "logo": "https://cdn.freebiesupply.com/logos/large/2x/the-national-lottery-1-logo-png-transparent.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 6,
+    "name": "The AA",
+    "url": "https://www.theaa.com/",
+    "category": "Bills",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/The_Automobile_Association_logo.svg/250px-The_Automobile_Association_logo.svg.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Insurance"
+    ]
+  },
+  {
+    "order": 6,
+    "name": "Disney+",
+    "url": "https://www.disneyplus.com/home",
+    "category": "TV",
+    "logo": "https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/25357066/Disney__Logo_March_2024.png?quality=90&strip=all&crop=7.8125%2C0%2C84.375%2C100&w=2400",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 7,
+    "name": "Veo",
+    "url": "<https://app.veo.co/clubs/george-warne/recordings>)",
+    "category": "Dorkinians",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcQRk-fvBeCbHsAycjsBSue7c-2wYOG4x4iQJA&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 7,
@@ -877,7 +1339,8 @@
     "logo": "https://static.thenounproject.com/png/384290-200.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 7,
@@ -887,7 +1350,30 @@
     "logo": "https://www.linkedin.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 7,
+    "name": "Postcode Lottery",
+    "url": "https://www.postcodelottery.co.uk/",
+    "category": "Finances",
+    "logo": "https://media.licdn.com/dms/image/v2/C4D0BAQEyTfs2VAB3tA/company-logo_200_200/company-logo_200_200/0/1674129663211/peoples_postcode_lottery_logo?e=2147483647&v=beta&t=Cd9ega_ECX37zuJOvr8FOAuDnfljoxW0H-Q3JnSvRd4",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 7,
+    "name": "NOWTV",
+    "url": "https://www.nowtv.com/existing",
+    "category": "TV",
+    "logo": "https://images.seeklogo.com/logo-png/50/2/now-logo-png_seeklogo-503593.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 8,
@@ -897,7 +1383,8 @@
     "logo": "https://static.thenounproject.com/png/384290-200.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 8,
@@ -907,7 +1394,19 @@
     "logo": "https://www.strava.com/favicon.ico",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 8,
+    "name": "Scottish Widows",
+    "url": "https://www.scottishwidows.co.uk",
+    "category": "Finances",
+    "logo": "https://www.scottishwidows.co.uk/assets/images/v3/promo/swc-v3-promo-scottish-widows-desktop-h-700x700.jpg",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   },
   {
     "order": 9,
@@ -917,6 +1416,18 @@
     "logo": "https://static.thenounproject.com/png/384290-200.png",
     "projectLink": "",
     "umamiId": null,
-    "umamiDashboardUrl": null
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 9,
+    "name": "Plum",
+    "url": "https://withplum.com",
+    "category": "Finances",
+    "logo": "https://images.seeklogo.com/logo-png/49/1/plum-logo-png_seeklogo-493847.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
   }
 ]

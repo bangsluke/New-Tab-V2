@@ -129,6 +129,21 @@ for (const row of dataRows) {
 
   const umamiTrackingLink = extractUrl(obj['Umami Tracking Link']);
 
+  // Normalise tags from the optional "Tags" column into an array of plain strings.
+  // Supports formats like:
+  //   "Insurance, Finance"
+  //   "#Insurance #Finance"
+  //   "Insurance Finance"
+  const rawTags = obj['Tags'] || '';
+  let tags = [];
+  if (rawTags && typeof rawTags === 'string') {
+    const hasComma = rawTags.includes(',');
+    const parts = hasComma ? rawTags.split(',') : rawTags.split(/\s+/);
+    tags = parts
+      .map(t => t.trim().replace(/^#+/, ''))
+      .filter(Boolean);
+  }
+
   links.push({
     order: parseInt(obj['Order'], 10) || 0,
     name: obj['Link Name'] || '',
@@ -138,6 +153,7 @@ for (const row of dataRows) {
     projectLink: extractUrl(obj['Project Link']),
     umamiId: extractUmamiId(umamiTrackingLink),
     umamiDashboardUrl: umamiTrackingLink || null,
+    tags,
   });
 }
 
