@@ -802,6 +802,17 @@
   },
   {
     "order": 3,
+    "name": "Bangeroo Music Website",
+    "url": "https://bangeroo-music-website.netlify.app/",
+    "category": "Misc Pages",
+    "logo": "https://bangsluke-assets.netlify.app/images/project-logos/Bangeroo-Site-Logo.png",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 3,
     "name": "Portfolio Card",
     "url": "https://bangsluke-portfolio-card.netlify.app/",
     "category": "Work – Portfolio",
@@ -1132,7 +1143,7 @@
   {
     "order": 5,
     "name": "Assets",
-    "url": "https://bangsluke-assets.netlify.app/",
+    "url": "https://bangsluke-assets.netlify.app/gallery",
     "category": "Development",
     "logo": "https://bangsluke-assets.netlify.app/images/project-logos/assets.png",
     "projectLink": "",
