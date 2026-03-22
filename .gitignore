@@ -1,6 +1,7 @@
 .env
 data/umami-config.json
 data/football-config.json
+data/supabase-config.json
 node_modules/
 
 # Local Netlify folder
