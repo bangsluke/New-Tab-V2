@@ -580,7 +580,7 @@ async function requestPersistentStorage() {
   try {
     const granted = await navigator.storage.persist();
     if (!granted) {
-      console.warn('Persistent storage not granted; click stats may be cleared by the browser.');
+      syncDebugLog('Persistent storage not granted (normal in some browsers; click stats may be evicted)');
     }
   } catch (err) {
     console.warn('Persistent storage request failed:', err && err.message ? err.message : err);
@@ -738,7 +738,7 @@ function buildLinkCard(link, opts = {}) {
       className: 'link-logo',
       src: logoSrc,
       alt: '',
-      loading: 'lazy',
+      // Omit loading="lazy" — Edge logs a noisy [Intervention] for lazy placeholders on many cards.
     });
     img.onerror = () => {
       console.warn('[New Tab V2] Logo failed to load (e.g. 404)', {
