@@ -393,16 +393,19 @@ async function initSupabase() {
   try {
     syncDebugLog('Loading @supabase/supabase-js from esm.sh…');
     const { createClient } = await importSupabaseEsModule();
+    // Custom auth lock: @supabase/supabase-js does not forward lockAcquireTimeout to GoTrue, so the
+    // default navigator.locks-based lock still used 5s timeouts and logged warnings in Edge.
+    // In-tab no-op lock matches GoTrue's lockNoOp: no cross-tab mutex (fine for one new-tab page).
+    const authInTabLock = async (_name, _acquireTimeout, fn) => await fn();
     supabaseClient = createClient(cfg.url, cfg.anonKey, {
       auth: {
         persistSession: true,
         storage: getSupabaseAuthStorage(),
         flowType: 'pkce',
-        // Reduces GoTrue "lock not released within 5000ms" when Edge/storage is slow
-        lockAcquireTimeout: 30000,
+        lock: authInTabLock,
       },
     });
-    syncDebugLog('createClient OK', { lockAcquireTimeout: 30000 });
+    syncDebugLog('createClient OK', { authLock: 'in-tab (no navigator.locks)' });
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
       const t0 = performance.now();
       syncDebugLog('onAuthStateChange', {
