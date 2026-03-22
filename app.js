@@ -125,6 +125,29 @@ function setSortMode(m) { localStorage.setItem(SORT_KEY, m); }
 
 // ── Sync debug (URL ?syncDebug=1 or localStorage ntv2-sync-debug=1) ─────────
 const SYNC_DEBUG_STORAGE_KEY = 'ntv2-sync-debug';
+/** Full-page diagnostics: ?debug=1 → localStorage; also turns on sync debug + console.warn lines (Edge-visible). */
+const DIAG_DEBUG_STORAGE_KEY = 'ntv2-debug';
+
+function initDiagDebugFromUrl() {
+  try {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('debug') === '1') {
+      localStorage.setItem(DIAG_DEBUG_STORAGE_KEY, '1');
+      localStorage.setItem(SYNC_DEBUG_STORAGE_KEY, '1');
+      const u = new URL(window.location.href);
+      u.searchParams.delete('debug');
+      history.replaceState({}, '', `${u.pathname}${u.search}${u.hash}`);
+    }
+  } catch { /* ignore */ }
+}
+
+function diagDebugEnabled() {
+  try {
+    return localStorage.getItem(DIAG_DEBUG_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
 
 function initSyncDebugFromUrl() {
   try {
@@ -146,6 +169,30 @@ function syncDebugEnabled() {
   }
 }
 
+function anyDebugPanelEnabled() {
+  return syncDebugEnabled() || diagDebugEnabled();
+}
+
+/** Logs to on-page panel and console.warn (Edge-visible default levels). */
+function diagDebugLog(message, detail) {
+  if (!diagDebugEnabled()) return;
+  const t = new Date().toISOString().slice(11, 23);
+  let line = `[${t}] ${message}`;
+  if (detail !== undefined) {
+    try {
+      line += typeof detail === 'string' ? ` ${detail}` : ` ${JSON.stringify(detail)}`;
+    } catch {
+      line += ' [unserializable detail]';
+    }
+  }
+  console.warn('[New Tab V2 debug]', line);
+  const pre = document.getElementById('sync-debug-log');
+  if (pre) {
+    pre.textContent += `${line}\n`;
+    pre.scrollTop = pre.scrollHeight;
+  }
+}
+
 function syncDebugLog(message, detail) {
   if (!syncDebugEnabled()) return;
   const t = new Date().toISOString().slice(11, 23);
@@ -157,7 +204,11 @@ function syncDebugLog(message, detail) {
       line += ' [unserializable detail]';
     }
   }
-  console.log('[sync-debug]', line);
+  if (diagDebugEnabled()) {
+    console.warn('[New Tab V2 debug]', `[sync] ${line}`);
+  } else {
+    console.log('[sync-debug]', line);
+  }
   const pre = document.getElementById('sync-debug-log');
   if (pre) {
     pre.textContent += `${line}\n`;
@@ -171,7 +222,7 @@ function initSyncDebugUI() {
   const clearBtn = document.getElementById('sync-debug-clear');
   const offBtn = document.getElementById('sync-debug-disable');
   if (!panel || !copyBtn || !clearBtn || !offBtn) return;
-  if (syncDebugEnabled()) panel.removeAttribute('hidden');
+  if (anyDebugPanelEnabled()) panel.removeAttribute('hidden');
 
   copyBtn.addEventListener('click', async () => {
     const pre = document.getElementById('sync-debug-log');
@@ -179,23 +230,27 @@ function initSyncDebugUI() {
     try {
       await navigator.clipboard.writeText(text);
       syncDebugLog('Copied log to clipboard');
+      diagDebugLog('UI: debug log copied to clipboard');
     } catch {
       syncDebugLog('Copy to clipboard failed (try selecting text manually)');
+      diagDebugLog('UI: clipboard copy failed');
     }
   });
   clearBtn.addEventListener('click', () => {
     const pre = document.getElementById('sync-debug-log');
     if (pre) pre.textContent = '';
     syncDebugLog('Log cleared');
+    diagDebugLog('Log cleared');
   });
   offBtn.addEventListener('click', () => {
     try {
       localStorage.removeItem(SYNC_DEBUG_STORAGE_KEY);
+      localStorage.removeItem(DIAG_DEBUG_STORAGE_KEY);
     } catch { /* ignore */ }
     panel.setAttribute('hidden', '');
     const pre = document.getElementById('sync-debug-log');
     if (pre) pre.textContent = '';
-    console.log('[sync-debug] disabled');
+    console.warn('[New Tab V2 debug] Diagnostics panel turned off (cleared ntv2-sync-debug + ntv2-debug)');
   });
 }
 
@@ -207,9 +262,11 @@ let supabaseAnonKey = null;
 
 async function loadSupabaseConfig() {
   try {
+    diagDebugLog('supabase: fetching data/supabase-config.json');
     const res = await fetch('data/supabase-config.json');
     if (!res.ok) {
       syncDebugLog('fetch data/supabase-config.json failed', { status: res.status, statusText: res.statusText });
+      diagDebugLog('supabase: config fetch failed', { status: res.status, statusText: res.statusText });
       return { enabled: false };
     }
     const cfg = await res.json();
@@ -226,6 +283,7 @@ async function loadSupabaseConfig() {
     return cfg;
   } catch (e) {
     syncDebugLog('loadSupabaseConfig error', e && e.message ? e.message : String(e));
+    diagDebugLog('supabase: loadSupabaseConfig exception', e && e.message ? e.message : String(e));
     return { enabled: false };
   }
 }
@@ -385,13 +443,27 @@ function logClickSyncConsole(tag, session) {
   // while Tracking Prevention etc. show as Warnings — so users saw no ntv2 lines.
   if (session?.user?.email) {
     console.info(prefix + ':', tag, '— signed in as', session.user.email);
+    if (diagDebugEnabled()) {
+      console.warn('[New Tab V2 debug]', `${prefix}: ${tag} — signed in as ${session.user.email}`);
+    }
   } else {
     console.info(prefix + ':', tag, '— not signed in');
+    if (diagDebugEnabled()) {
+      console.warn('[New Tab V2 debug]', `${prefix}: ${tag} — not signed in`);
+    }
   }
 }
 
 async function initSupabase() {
+  const supaT0 = performance.now();
+  diagDebugLog('supabase: initSupabase start');
   const cfg = await loadSupabaseConfig();
+  diagDebugLog('supabase: config ready', {
+    ms: Math.round(performance.now() - supaT0),
+    enabled: Boolean(cfg.enabled),
+    hasUrl: Boolean(cfg.url),
+    hasKey: Boolean(cfg.anonKey),
+  });
   if (!cfg.enabled || !cfg.url || !cfg.anonKey) {
     syncDebugLog('Supabase not initialized', {
       reason: !cfg.enabled
@@ -401,13 +473,17 @@ async function initSupabase() {
     console.info(
       '[New Tab V2] Click sync: disabled — no Supabase URL/key in config (set SUPABASE_URL + SUPABASE_ANON_KEY on Netlify and redeploy).',
     );
+    diagDebugLog('supabase: init aborted (disabled or missing url/anonKey)');
     return;
   }
   supabaseProjectUrl = cfg.url;
   supabaseAnonKey = cfg.anonKey;
   try {
+    const esmT0 = performance.now();
     syncDebugLog('Loading @supabase/supabase-js from esm.sh…');
+    diagDebugLog('supabase: importing @supabase/supabase-js (esm.sh)…');
     const { createClient } = await importSupabaseEsModule();
+    diagDebugLog('supabase: ESM import finished', { ms: Math.round(performance.now() - esmT0) });
     // Custom auth lock: @supabase/supabase-js does not forward lockAcquireTimeout to GoTrue, so the
     // default navigator.locks-based lock still used 5s timeouts and logged warnings in Edge.
     // In-tab no-op lock matches GoTrue's lockNoOp: no cross-tab mutex (fine for one new-tab page).
@@ -458,6 +534,10 @@ async function initSupabase() {
     });
     // Single reliable "every visit" line: read session after listener is registered (storage + URL exchange may lag INITIAL_SESSION).
     const { data: { session: visitSession } } = await supabaseClient.auth.getSession();
+    diagDebugLog('supabase: getSession after subscribe', {
+      email: visitSession?.user?.email || null,
+      msTotal: Math.round(performance.now() - supaT0),
+    });
     logClickSyncConsole('This visit', visitSession);
     const visitEmail = visitSession?.user?.email ?? null;
     const authReturnPending =
@@ -467,12 +547,17 @@ async function initSupabase() {
         try {
           const { data: { session: s1 } } = await supabaseClient.auth.getSession();
           const e1 = s1?.user?.email ?? null;
-          if (e1 !== visitEmail) logClickSyncConsole('This visit (after auth redirect)', s1);
+          if (e1 !== visitEmail) {
+            diagDebugLog('supabase: delayed getSession after auth URL', { email: e1 });
+            logClickSyncConsole('This visit (after auth redirect)', s1);
+          }
         } catch (_) { /* ignore */ }
       }, 1000);
     }
+    diagDebugLog('supabase: initSupabase completed OK', { ms: Math.round(performance.now() - supaT0) });
   } catch (e) {
     syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
+    diagDebugLog('supabase: initSupabase threw', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
     console.info('[New Tab V2] Click sync: unavailable — initialization failed (see warning above).');
     supabaseClient = null;
@@ -1221,26 +1306,57 @@ async function fetchUmamiWindow(config, siteId, startAt, endAt) {
 // ── Weather ───────────────────────────────────────────────────────────────
 async function initWeather() {
   const section = $('#weather');
+  diagDebugLog('weather: initWeather() running (if this never appears, bootstrap is blocked before initWeather)');
 
   if (!navigator.geolocation) {
+    diagDebugLog('weather: navigator.geolocation missing');
     section.innerHTML = '<p class="weather-error">Geolocation not supported.</p>';
     return;
   }
 
+  let geoSettled = false;
+  const geoWatchdog = setTimeout(() => {
+    if (geoSettled) return;
+    diagDebugLog('weather: watchdog — no geolocation success/error after 12s (try allowing location or check browser privacy)');
+    section.innerHTML =
+      '<p class="weather-error">Location did not respond in time. Allow location for this site and refresh, or open with <code>?debug=1</code> for details.</p>';
+  }, 12000);
+
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
+      geoSettled = true;
+      clearTimeout(geoWatchdog);
       const { latitude: lat, longitude: lon } = pos.coords;
+      diagDebugLog('weather: geolocation OK', {
+        lat: Math.round(lat * 100) / 100,
+        lon: Math.round(lon * 100) / 100,
+      });
       try {
+        diagDebugLog('weather: fetching Open-Meteo + Nominatim');
+        const tFetch = performance.now();
         const [weather, geo] = await Promise.all([
           fetchWeather(lat, lon),
           fetchCityName(lat, lon),
         ]);
+        diagDebugLog('weather: APIs OK', {
+          ms: Math.round(performance.now() - tFetch),
+          city: geo || null,
+        });
         renderWeather(section, weather, geo);
       } catch (err) {
+        diagDebugLog('weather: fetch/render failed', {
+          message: err && err.message ? err.message : String(err),
+        });
         section.innerHTML = `<p class="weather-error">Weather unavailable: ${err.message}</p>`;
       }
     },
     (err) => {
+      geoSettled = true;
+      clearTimeout(geoWatchdog);
+      diagDebugLog('weather: geolocation error', {
+        code: err.code,
+        message: err.message || null,
+      });
       const messages = {
         1: 'Location permission denied. Click the lock/location icon in your browser\'s address bar and allow access, then refresh.',
         2: 'Location unavailable. Check your device\'s location settings and try refreshing.',
@@ -2093,6 +2209,14 @@ async function initCryptoBtcGbp() {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 (async function init() {
+  const SUPABASE_BOOT_BUDGET_MS = 15000;
+  let syncAuthUiInitialized = false;
+  function ensureSyncAuthUI() {
+    if (syncAuthUiInitialized || !supabaseClient) return;
+    syncAuthUiInitialized = true;
+    initSyncAuthUI();
+  }
+
   const searchEl = document.getElementById('search-input');
   if (searchEl) {
     searchEl.focus();
@@ -2113,8 +2237,17 @@ async function initCryptoBtcGbp() {
     });
   }
 
+  initDiagDebugFromUrl();
   initSyncDebugFromUrl();
   initSyncDebugUI();
+
+  const bootT0 = performance.now();
+  diagDebugLog('bootstrap: page init', {
+    origin: location.origin,
+    href: location.href.slice(0, 120),
+    oauthCodeInSearch: /[?&]code=/.test(location.search),
+    hashChars: location.hash.length,
+  });
   syncDebugLog('page load', {
     origin: location.origin,
     pathname: location.pathname,
@@ -2137,9 +2270,15 @@ async function initCryptoBtcGbp() {
   }
 
   // Start Supabase in parallel with links: auth status logs and config fetch are not blocked by links.json.
-  // A slow/hung esm.sh import still cannot block link rendering because we only await supabase after loadLinks.
   const supabaseInitPromise = initSupabase();
+  diagDebugLog('bootstrap: loadLinks + initSupabase started in parallel');
+
+  const linksT0 = performance.now();
   const links = await loadLinks();
+  diagDebugLog('bootstrap: loadLinks settled', {
+    count: links.length,
+    ms: Math.round(performance.now() - linksT0),
+  });
   const linksSection = $('#links');
   if (links.length) {
     const mode = getSortMode();
@@ -2152,13 +2291,41 @@ async function initCryptoBtcGbp() {
     linksSection.innerHTML = '<p class="no-results">No links found. Add entries to <code>data/links.json</code>.</p>';
   }
 
-  await supabaseInitPromise;
-  if (supabaseClient) initSyncAuthUI();
+  const sbWaitT0 = performance.now();
+  const supaOutcome = await Promise.race([
+    supabaseInitPromise.then(() => 'complete'),
+    new Promise((r) => setTimeout(() => r('timeout'), SUPABASE_BOOT_BUDGET_MS)),
+  ]);
+  const sbWaitMs = Math.round(performance.now() - sbWaitT0);
+  if (supaOutcome === 'timeout') {
+    diagDebugLog('bootstrap: Supabase still initializing after budget — unblocking weather/widgets', {
+      budgetMs: SUPABASE_BOOT_BUDGET_MS,
+      waitedMs: sbWaitMs,
+      hint: 'Often esm.sh or auth storage; check Network. Sync UI will attach when init finishes.',
+    });
+    console.warn(
+      '[New Tab V2] Supabase init slower than',
+      SUPABASE_BOOT_BUDGET_MS / 1000,
+      's — started weather anyway. Add ?debug=1 for a full trace.',
+    );
+  } else {
+    diagDebugLog('bootstrap: Supabase await finished within budget', { waitedMs: sbWaitMs });
+  }
+  ensureSyncAuthUI();
+  void supabaseInitPromise.finally(() => {
+    diagDebugLog('bootstrap: Supabase promise settled', {
+      hasClient: Boolean(supabaseClient),
+      totalMsSinceInit: Math.round(performance.now() - bootT0),
+    });
+    ensureSyncAuthUI();
+  });
 
   requestPersistentStorage();
+  diagDebugLog('bootstrap: starting initWeather + other widgets');
   initWeather();
   initFootball();
   initGithubHeatmap();
   initNewsHeadlines();
   initCryptoBtcGbp();
+  diagDebugLog('bootstrap: weather + other widgets started (async; may still be loading)');
 })();
