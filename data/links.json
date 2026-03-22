@@ -1410,6 +1410,17 @@
   },
   {
     "order": 8,
+    "name": "Supabase",
+    "url": "https://supabase.com/dashboard/org/nuvwkikghtegrjohultj",
+    "category": "Coding/Hosting/DB",
+    "logo": "<https://encrypted-tbn0.gstatic.com/images?q=tbn>:ANd9GcQNfSt0xBDTUkGqyLPvZa5PBHYNVg-WJ2OWPQ&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": []
+  },
+  {
+    "order": 8,
     "name": "Strava",
     "url": "https://www.strava.com/athletes/4308094",
     "category": "Social Media",

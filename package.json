@@ -5,7 +5,8 @@
   "scripts": {
     "refresh": "node scripts/refresh-links.js",
     "netlify": "node scripts/netlify-build.js",
-    "dev:netlify": "npx netlify dev"
+    "dev:netlify": "npx netlify dev",
+    "vendor:libs": "node scripts/vendor-libs.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

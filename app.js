@@ -398,34 +398,44 @@ async function initSupabase() {
         persistSession: true,
         storage: getSupabaseAuthStorage(),
         flowType: 'pkce',
+        // Reduces GoTrue "lock not released within 5000ms" when Edge/storage is slow
+        lockAcquireTimeout: 30000,
       },
     });
-    syncDebugLog('createClient OK');
+    syncDebugLog('createClient OK', { lockAcquireTimeout: 30000 });
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      const t0 = performance.now();
       syncDebugLog('onAuthStateChange', {
         event,
         hasSession: Boolean(session),
         email: session?.user?.email || null,
       });
+      // Avoid concurrent getSession() + storage lock: use session from callback; do not call getSession() in parallel here.
       if (event === 'INITIAL_SESSION') {
-        updateSyncAuthPanel();
+        if (session) {
+          syncDebugLog('INITIAL_SESSION: pull starting');
+          await pullClickEventsFromSupabase();
+          if (allLinks.length) rerenderLinksFromState(allLinks);
+          syncDebugLog('INITIAL_SESSION: pull done', { ms: Math.round(performance.now() - t0) });
+        } else {
+          syncDebugLog('INITIAL_SESSION: no stored session');
+        }
+        updateSyncAuthPanel(session);
+        syncDebugLog('INITIAL_SESSION: panel updated', { ms: Math.round(performance.now() - t0) });
         return;
       }
       if (session && event === 'SIGNED_IN') {
+        syncDebugLog('SIGNED_IN: pull starting');
         await pullClickEventsFromSupabase();
         if (allLinks.length) rerenderLinksFromState(allLinks);
+        syncDebugLog('SIGNED_IN: pull done', { ms: Math.round(performance.now() - t0) });
       }
       if (event === 'SIGNED_OUT') {
         if (allLinks.length) rerenderLinksFromState(allLinks);
       }
-      updateSyncAuthPanel();
+      updateSyncAuthPanel(session);
+      syncDebugLog('onAuthStateChange done', { event, ms: Math.round(performance.now() - t0) });
     });
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    syncDebugLog('getSession after init', { hasSession: Boolean(session), email: session?.user?.email || null });
-    if (session) {
-      await pullClickEventsFromSupabase();
-      if (allLinks.length) rerenderLinksFromState(allLinks);
-    }
   } catch (e) {
     syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
@@ -435,7 +445,10 @@ async function initSupabase() {
   }
 }
 
-function updateSyncAuthPanel() {
+/**
+ * @param {object | null | undefined} sessionHint - Pass session from onAuthStateChange to avoid extra getSession() (storage lock contention).
+ */
+function updateSyncAuthPanel(sessionHint) {
   const panel = document.getElementById('sync-auth-panel');
   const emailInput = document.getElementById('sync-auth-email');
   const sendBtn = document.getElementById('sync-auth-send');
@@ -451,7 +464,7 @@ function updateSyncAuthPanel() {
     return;
   }
 
-  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+  const apply = (session) => {
     const signedIn = Boolean(session);
     emailInput.hidden = signedIn;
     sendBtn.hidden = signedIn;
@@ -462,6 +475,17 @@ function updateSyncAuthPanel() {
     } else if (statusEl && !statusEl.dataset.pending) {
       statusEl.textContent = '';
     }
+  };
+
+  if (sessionHint !== undefined) {
+    syncDebugLog('updateSyncAuthPanel (from session hint, no getSession)');
+    apply(sessionHint);
+    return;
+  }
+
+  syncDebugLog('updateSyncAuthPanel → getSession()');
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    apply(session);
   });
 }
 
@@ -676,6 +700,25 @@ function rerenderLinksFromState(links) {
   }
 }
 
+/** Valid http(s) logo URL for img src, or null (bad data would otherwise resolve to relative paths like /images?q=tbn → 404). */
+function normalizeLogoSrc(raw) {
+  if (!raw || typeof raw !== 'string') return null;
+  let s = raw.trim().replace(/^<+/, '').trim();
+  const i = s.indexOf('https://');
+  if (i >= 0) s = s.slice(i);
+  else if (s.startsWith('http://')) { /* keep */ } else return null;
+  // links.json typo: `?q=tbn>:ANd9...` should be `?q=tbn:ANd9...` (Google thumbnail URLs)
+  s = s.replace(/\?q=tbn>\:/gi, '?q=tbn:');
+  const noGt = s.split('>')[0].trim();
+  try {
+    const u = new URL(noGt.split(/\s/)[0]);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+    return u.href;
+  } catch {
+    return null;
+  }
+}
+
 function buildLinkCard(link, opts = {}) {
   // Card is the main link
   const card = el('a', {
@@ -689,16 +732,31 @@ function buildLinkCard(link, opts = {}) {
   });
 
   // Logo or placeholder
-  if (link.logo) {
+  const logoSrc = normalizeLogoSrc(link.logo);
+  if (logoSrc) {
     const img = el('img', {
       className: 'link-logo',
-      src: link.logo,
+      src: logoSrc,
       alt: '',
       loading: 'lazy',
     });
-    img.onerror = () => img.replaceWith(makeLogoPlaceholder(link.name));
+    img.onerror = () => {
+      console.warn('[New Tab V2] Logo failed to load (e.g. 404)', {
+        linkName: link.name,
+        linkUrl: link.url,
+        logoUrl: logoSrc,
+      });
+      img.replaceWith(makeLogoPlaceholder(link.name));
+    };
     card.append(img);
   } else {
+    if (link.logo) {
+      console.warn('[New Tab V2] Logo URL invalid or unusable — update links.json', {
+        linkName: link.name,
+        linkUrl: link.url,
+        rawLogo: typeof link.logo === 'string' ? link.logo.slice(0, 200) : link.logo,
+      });
+    }
     card.append(makeLogoPlaceholder(link.name));
   }
 

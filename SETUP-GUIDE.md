@@ -6,6 +6,10 @@ Your new tab page must open from the **same HTTPS URL** on every device (for exa
 
 **Microsoft Edge “Tracking Prevention”:** Strict modes can block **third-party** storage (you may see warnings for `unpkg.com` / `cdn.jsdelivr.net` / `esm.sh`). Those messages are usually harmless for this app. If **first-party** storage for your Netlify origin is blocked, sign-in may not persist across reloads; try **Balanced** tracking prevention for your site or add an exception for your new-tab URL.
 
+**GoTrue lock warning (`lock:sb-…-auth-token` not released within 5000ms):** Usually means two auth operations hit **localStorage** at once (e.g. `getSession` overlapping the session callback). The app avoids redundant `getSession` calls during `onAuthStateChange` and uses a longer lock timeout. If you still see it occasionally on Edge, it is often recoverable (“forcefully acquiring the lock”).
+
+**Console 404 for `images`:** Often caused by **malformed `logo` strings** in `data/links.json` (e.g. angle brackets or stray `>` in the URL), which the browser treats as a path on your own site (`/images`). Invalid logos fall back to the letter placeholder and should no longer spam 404s.
+
 ---
 
 ## 1. Create a Supabase project
