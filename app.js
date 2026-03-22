@@ -350,6 +350,34 @@ async function resetSupabaseClicksForRange(range) {
   if (error) console.warn('Supabase delete failed:', error.message);
 }
 
+/** Auth session storage; in-memory fallback when localStorage is blocked (strict Tracking Prevention, etc.). */
+function getSupabaseAuthStorage() {
+  try {
+    const probe = '__ntv2_ls_probe';
+    localStorage.setItem(probe, '1');
+    localStorage.removeItem(probe);
+    return localStorage;
+  } catch {
+    syncDebugLog('localStorage unavailable for auth; using memory (session may not survive reload)');
+    const mem = Object.create(null);
+    return {
+      getItem: (key) => (Object.prototype.hasOwnProperty.call(mem, key) ? mem[key] : null),
+      setItem: (key, val) => { mem[key] = String(val); },
+      removeItem: (key) => { delete mem[key]; },
+    };
+  }
+}
+
+async function importSupabaseEsModule() {
+  const ms = 15000;
+  return await Promise.race([
+    import('https://esm.sh/@supabase/supabase-js@2'),
+    new Promise((_, rej) => {
+      setTimeout(() => rej(new Error(`Supabase module import timed out after ${ms}ms (network or CSP)`)), ms);
+    }),
+  ]);
+}
+
 async function initSupabase() {
   const cfg = await loadSupabaseConfig();
   if (!cfg.enabled || !cfg.url || !cfg.anonKey) {
@@ -364,11 +392,11 @@ async function initSupabase() {
   supabaseAnonKey = cfg.anonKey;
   try {
     syncDebugLog('Loading @supabase/supabase-js from esm.sh…');
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const { createClient } = await importSupabaseEsModule();
     supabaseClient = createClient(cfg.url, cfg.anonKey, {
       auth: {
         persistSession: true,
-        storage: localStorage,
+        storage: getSupabaseAuthStorage(),
         flowType: 'pkce',
       },
     });
@@ -394,7 +422,10 @@ async function initSupabase() {
     });
     const { data: { session } } = await supabaseClient.auth.getSession();
     syncDebugLog('getSession after init', { hasSession: Boolean(session), email: session?.user?.email || null });
-    if (session) await pullClickEventsFromSupabase();
+    if (session) {
+      await pullClickEventsFromSupabase();
+      if (allLinks.length) rerenderLinksFromState(allLinks);
+    }
   } catch (e) {
     syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
@@ -1992,9 +2023,6 @@ async function initCryptoBtcGbp() {
   initClock();
   initSearchGoogleBtn();
 
-  await initSupabase();
-  if (supabaseClient) initSyncAuthUI();
-
   if (window.lucide) {
     lucide.createIcons();
   } else {
@@ -2002,7 +2030,9 @@ async function initCryptoBtcGbp() {
     setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500);
   }
 
+  // Load and render links before Supabase so a slow/hung auth or esm.sh import never leaves the UI stuck on "Loading links…"
   const links = await loadLinks();
+  const linksSection = $('#links');
   if (links.length) {
     const mode = getSortMode();
     renderLinks(links, mode);
@@ -2010,7 +2040,12 @@ async function initCryptoBtcGbp() {
     initSearch(links, mode);
     initResetStatsBtn(links);
     fetchUmamiStats(links);
+  } else if (linksSection && linksSection.querySelector('.links-loading')) {
+    linksSection.innerHTML = '<p class="no-results">No links found. Add entries to <code>data/links.json</code>.</p>';
   }
+
+  await initSupabase();
+  if (supabaseClient) initSyncAuthUI();
 
   requestPersistentStorage();
   initWeather();
