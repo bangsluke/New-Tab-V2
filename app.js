@@ -104,6 +104,7 @@ function incrementClickCount(url) {
   if (!Array.isArray(data[url])) data[url] = [];
   data[url].push(Date.now());
   localStorage.setItem(CLICKS_KEY, JSON.stringify(data));
+  void insertSupabaseClickEvent(url);
 }
 function resetClicksByPeriod(periodMs) {
   const cutoff = Date.now() - periodMs;
@@ -121,6 +122,217 @@ function resetRecentByPeriod(periodMs) {
 }
 function getSortMode() { return localStorage.getItem(SORT_KEY) || 'frequency'; }
 function setSortMode(m) { localStorage.setItem(SORT_KEY, m); }
+
+// ── Supabase (optional cross-device click sync) ─────────────────────────────
+let supabaseClient = null;
+/** Set when sync is enabled — used for keepalive REST inserts (survives navigation). */
+let supabaseProjectUrl = null;
+let supabaseAnonKey = null;
+
+async function loadSupabaseConfig() {
+  try {
+    const res = await fetch('data/supabase-config.json');
+    if (!res.ok) return { enabled: false };
+    return await res.json();
+  } catch {
+    return { enabled: false };
+  }
+}
+
+function mergeRemoteClickRowsIntoLocal(rows) {
+  const local = getRawClickData();
+  for (const row of rows) {
+    const url = row.url;
+    const ts = new Date(row.clicked_at).getTime();
+    if (!Number.isFinite(ts)) continue;
+    if (!Array.isArray(local[url])) local[url] = [];
+    local[url].push(ts);
+  }
+  for (const url of Object.keys(local)) {
+    local[url] = [...new Set(local[url])].sort((a, b) => a - b);
+  }
+  localStorage.setItem(CLICKS_KEY, JSON.stringify(local));
+}
+
+async function pullClickEventsFromSupabase() {
+  if (!supabaseClient) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) return;
+  const merged = [];
+  let from = 0;
+  const pageSize = 1000;
+  for (;;) {
+    const { data, error } = await supabaseClient
+      .from('link_click_events')
+      .select('url, clicked_at')
+      .order('clicked_at', { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (error) {
+      console.warn('Supabase pull failed:', error.message);
+      return;
+    }
+    if (!data || !data.length) break;
+    merged.push(...data);
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+  mergeRemoteClickRowsIntoLocal(merged);
+}
+
+async function insertSupabaseClickEvent(url) {
+  if (!supabaseClient || !supabaseProjectUrl || !supabaseAnonKey) return;
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+    // keepalive so the request can finish when the link navigates away
+    const res = await fetch(`${supabaseProjectUrl}/rest/v1/link_click_events`, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${session.access_token}`,
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({
+        user_id: session.user.id,
+        url,
+        clicked_at: new Date().toISOString(),
+      }),
+    });
+    if (!res.ok) console.warn('Supabase insert failed:', res.status);
+  } catch (e) {
+    console.warn('Supabase insert failed:', e && e.message ? e.message : e);
+  }
+}
+
+async function resetSupabaseClicksForRange(range) {
+  if (!supabaseClient) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) return;
+  if (range === 'all') {
+    const { error } = await supabaseClient
+      .from('link_click_events')
+      .delete()
+      .gte('clicked_at', '1970-01-01T00:00:00.000Z');
+    if (error) console.warn('Supabase delete failed:', error.message);
+    return;
+  }
+  const h = 60 * 60 * 1000;
+  const periodMs = range === 'hour' ? h : range === 'day' ? 24 * h : 7 * 24 * h;
+  const cutoffIso = new Date(Date.now() - periodMs).toISOString();
+  const { error } = await supabaseClient
+    .from('link_click_events')
+    .delete()
+    .gte('clicked_at', cutoffIso);
+  if (error) console.warn('Supabase delete failed:', error.message);
+}
+
+async function initSupabase() {
+  const cfg = await loadSupabaseConfig();
+  if (!cfg.enabled || !cfg.url || !cfg.anonKey) return;
+  supabaseProjectUrl = cfg.url;
+  supabaseAnonKey = cfg.anonKey;
+  try {
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    supabaseClient = createClient(cfg.url, cfg.anonKey, {
+      auth: {
+        persistSession: true,
+        storage: localStorage,
+        flowType: 'pkce',
+      },
+    });
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION') {
+        updateSyncAuthPanel();
+        return;
+      }
+      if (session && event === 'SIGNED_IN') {
+        await pullClickEventsFromSupabase();
+        if (allLinks.length) rerenderLinksFromState(allLinks);
+      }
+      if (event === 'SIGNED_OUT') {
+        if (allLinks.length) rerenderLinksFromState(allLinks);
+      }
+      updateSyncAuthPanel();
+    });
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) await pullClickEventsFromSupabase();
+  } catch (e) {
+    console.warn('Supabase init failed:', e && e.message ? e.message : e);
+    supabaseClient = null;
+    supabaseProjectUrl = null;
+    supabaseAnonKey = null;
+  }
+}
+
+function updateSyncAuthPanel() {
+  const panel = document.getElementById('sync-auth-panel');
+  const emailInput = document.getElementById('sync-auth-email');
+  const sendBtn = document.getElementById('sync-auth-send');
+  const outBtn = document.getElementById('sync-auth-out');
+  const statusEl = document.getElementById('sync-auth-status');
+  if (!panel || !emailInput || !sendBtn || !outBtn) return;
+
+  if (!supabaseClient) {
+    emailInput.hidden = true;
+    sendBtn.hidden = true;
+    outBtn.hidden = true;
+    if (statusEl) statusEl.textContent = '';
+    return;
+  }
+
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    const signedIn = Boolean(session);
+    emailInput.hidden = signedIn;
+    sendBtn.hidden = signedIn;
+    outBtn.hidden = !signedIn;
+    if (signedIn && session.user?.email) {
+      emailInput.value = session.user.email;
+      if (statusEl) statusEl.textContent = 'Signed in — clicks sync across devices.';
+    } else if (statusEl && !statusEl.dataset.pending) {
+      statusEl.textContent = '';
+    }
+  });
+}
+
+function initSyncAuthUI() {
+  const panel = document.getElementById('sync-auth-panel');
+  const sendBtn = document.getElementById('sync-auth-send');
+  const outBtn = document.getElementById('sync-auth-out');
+  if (!panel || !sendBtn || !outBtn || !supabaseClient) return;
+
+  panel.removeAttribute('hidden');
+
+  sendBtn.addEventListener('click', async () => {
+    const emailInput = document.getElementById('sync-auth-email');
+    const statusEl = document.getElementById('sync-auth-status');
+    const email = (emailInput && emailInput.value ? emailInput.value : '').trim();
+    if (!email || !statusEl) return;
+    statusEl.textContent = 'Sending link…';
+    statusEl.dataset.pending = '1';
+    const redirect = `${window.location.origin}${window.location.pathname}`;
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirect },
+    });
+    delete statusEl.dataset.pending;
+    if (error) {
+      statusEl.textContent = error.message || 'Could not send link.';
+      return;
+    }
+    statusEl.textContent = 'Check your email for the sign-in link.';
+  });
+
+  outBtn.addEventListener('click', async () => {
+    const statusEl = document.getElementById('sync-auth-status');
+    if (statusEl) statusEl.textContent = 'Signing out…';
+    await supabaseClient.auth.signOut();
+    if (statusEl) statusEl.textContent = 'Signed out. Local click counts are unchanged.';
+  });
+
+  updateSyncAuthPanel();
+}
 
 const UMAMI_METRIC_KEY = 'ntv2-umami-metric';
 const UMAMI_PERIOD_KEY  = 'ntv2-umami-period';
@@ -216,12 +428,21 @@ function groupByCategory(links) {
   return groups;
 }
 
-function renderLinks(links, mode = 'grouping') {
+function renderLinks(links, mode = 'grouping', options = {}) {
+  const preserveInputOrder = Boolean(options.preserveInputOrder);
   const container = $('#links');
   container.innerHTML = '';
 
   if (!links.length) {
     container.innerHTML = '<p class="no-results">No links found.</p>';
+    return;
+  }
+
+  if (preserveInputOrder) {
+    const grid = el('div', { className: 'links-grid' });
+    links.forEach(link => grid.append(buildLinkCard(link)));
+    container.append(grid);
+    applyUmamiFromCache();
     return;
   }
 
@@ -267,6 +488,17 @@ function renderLinks(links, mode = 'grouping') {
     }
   }
   applyUmamiFromCache();
+}
+
+/** Re-render links using current sort mode, or re-run search filter if the box has a query. */
+function rerenderLinksFromState(links) {
+  const mode = getSortMode();
+  const input = document.getElementById('search-input');
+  if (input && input.value.trim()) {
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  } else {
+    renderLinks(links, mode);
+  }
 }
 
 function buildLinkCard(link, opts = {}) {
@@ -453,7 +685,7 @@ function initSearch(links, mode = getSortMode()) {
       return key && !directKeySet.has(key);
     });
 
-    renderLinks([...directMatches, ...remainingFuzzy], mode);
+    renderLinks([...directMatches, ...remainingFuzzy], mode, { preserveInputOrder: true });
   });
 
   if (clearBtn) {
@@ -515,7 +747,7 @@ function initResetStatsBtn(links) {
   });
 
   modal.querySelectorAll('.modal-option-btn').forEach(optBtn => {
-    optBtn.addEventListener('click', () => {
+    optBtn.addEventListener('click', async () => {
       const range = optBtn.dataset.range;
       const h = 60 * 60 * 1000;
       const RANGE_LABELS = {
@@ -528,6 +760,8 @@ function initResetStatsBtn(links) {
       if (range === 'day')  { resetClicksByPeriod(24 * h);       resetRecentByPeriod(24 * h); }
       if (range === 'week') { resetClicksByPeriod(7 * 24 * h);   resetRecentByPeriod(7 * 24 * h); }
       if (range === 'all')  { localStorage.removeItem(CLICKS_KEY); localStorage.removeItem(RECENT_KEY); }
+
+      await resetSupabaseClicksForRange(range);
 
       // Show confirmation, then auto-close and restore modal for next use
       const titleEl  = modal.querySelector('.modal-title');
@@ -547,7 +781,7 @@ function initResetStatsBtn(links) {
         if (cancelEl)  cancelEl.hidden  = false;
       }, 1500);
 
-      renderLinks(links, getSortMode());
+      rerenderLinksFromState(links);
     });
   });
 }
@@ -586,7 +820,11 @@ function initSortBar(links) {
     update();
     renderLinks(links, mode);
     initSearch(links, mode);
-    if (window.innerWidth > 600) document.getElementById('search-input')?.focus();
+    const searchInput = document.getElementById('search-input');
+    if (searchInput && searchInput.value.trim()) {
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    if (window.innerWidth > 600) searchInput?.focus();
   });
   update();
   sortBar.append(btn);
@@ -1600,6 +1838,9 @@ async function initCryptoBtcGbp() {
   initFAB();
   initClock();
   initSearchGoogleBtn();
+
+  await initSupabase();
+  if (supabaseClient) initSyncAuthUI();
 
   if (window.lucide) {
     lucide.createIcons();

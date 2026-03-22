@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * netlify-build.js
- * Netlify build step: generates data/umami-config.json and data/football-config.json
- * from environment variables set in the Netlify dashboard.
+ * Netlify build step: generates data/umami-config.json, data/football-config.json,
+ * and data/supabase-config.json from environment variables set in the Netlify dashboard.
  * data/links.json is pre-committed — this script does not regenerate it.
  */
 const fs = require('fs');
@@ -37,3 +37,16 @@ fs.writeFileSync(
   'utf8'
 );
 console.log(`✓ Wrote data/football-config.json (enabled: ${footballConfig.enabled})`);
+
+// Supabase (optional cross-device click sync)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnon = process.env.SUPABASE_ANON_KEY;
+const supabaseConfig = supabaseUrl && supabaseAnon && supabaseAnon !== 'your_key_here'
+  ? { enabled: true, url: supabaseUrl, anonKey: supabaseAnon }
+  : { enabled: false };
+fs.writeFileSync(
+  path.join(DATA_DIR, 'supabase-config.json'),
+  JSON.stringify(supabaseConfig, null, 2),
+  'utf8'
+);
+console.log(`✓ Wrote data/supabase-config.json (enabled: ${supabaseConfig.enabled})`);

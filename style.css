@@ -735,8 +735,57 @@ main {
 /* ── Reset stats button ──────────────────────────────────────────────────── */
 #links-actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: 0.75rem 1rem;
   padding-top: 0.5rem;
+}
+.sync-auth-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.sync-auth-label {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  opacity: 0.85;
+}
+.sync-auth-email {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  color: var(--text-main, #e8e6f0);
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  min-width: 10rem;
+  max-width: 14rem;
+}
+.sync-auth-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+.sync-auth-btn:hover {
+  border-color: rgba(129, 140, 248, 0.45);
+  color: #a5b4fc;
+}
+.sync-auth-status {
+  flex-basis: 100%;
+  font-size: 0.7rem;
+  opacity: 0.9;
 }
 .reset-stats-btn {
   background: none;
