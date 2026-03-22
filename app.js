@@ -381,10 +381,12 @@ async function importSupabaseEsModule() {
 /** One-line console hint: click-sync sign-in state (email or not signed in). */
 function logClickSyncConsole(tag, session) {
   const prefix = '[New Tab V2] Click sync';
+  // Use console.info (not .log): Chromium/Edge classify console.log as "Verbose", often hidden by default
+  // while Tracking Prevention etc. show as Warnings — so users saw no ntv2 lines.
   if (session?.user?.email) {
-    console.log(prefix + ':', tag, '— signed in as', session.user.email);
+    console.info(prefix + ':', tag, '— signed in as', session.user.email);
   } else {
-    console.log(prefix + ':', tag, '— not signed in');
+    console.info(prefix + ':', tag, '— not signed in');
   }
 }
 
@@ -396,7 +398,7 @@ async function initSupabase() {
         ? 'disabled in data/supabase-config.json (set SUPABASE_URL + SUPABASE_ANON_KEY on Netlify and redeploy)'
         : 'missing url or anonKey in config',
     });
-    console.log(
+    console.info(
       '[New Tab V2] Click sync: disabled — no Supabase URL/key in config (set SUPABASE_URL + SUPABASE_ANON_KEY on Netlify and redeploy).',
     );
     return;
@@ -458,7 +460,7 @@ async function initSupabase() {
   } catch (e) {
     syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
-    console.log('[New Tab V2] Click sync: unavailable — initialization failed (see warning above).');
+    console.info('[New Tab V2] Click sync: unavailable — initialization failed (see warning above).');
     supabaseClient = null;
     supabaseProjectUrl = null;
     supabaseAnonKey = null;
@@ -2108,7 +2110,9 @@ async function initCryptoBtcGbp() {
     setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500);
   }
 
-  // Load and render links before Supabase so a slow/hung auth or esm.sh import never leaves the UI stuck on "Loading links…"
+  // Start Supabase in parallel with links: auth status logs and config fetch are not blocked by links.json.
+  // A slow/hung esm.sh import still cannot block link rendering because we only await supabase after loadLinks.
+  const supabaseInitPromise = initSupabase();
   const links = await loadLinks();
   const linksSection = $('#links');
   if (links.length) {
@@ -2122,7 +2126,7 @@ async function initCryptoBtcGbp() {
     linksSection.innerHTML = '<p class="no-results">No links found. Add entries to <code>data/links.json</code>.</p>';
   }
 
-  await initSupabase();
+  await supabaseInitPromise;
   if (supabaseClient) initSyncAuthUI();
 
   requestPersistentStorage();
