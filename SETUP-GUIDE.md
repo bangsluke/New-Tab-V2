@@ -4,7 +4,11 @@ This project can sync link **click counts** across browsers and devices (for exa
 
 Your new tab page must open from the **same HTTPS URL** on every device (for example `https://your-site.netlify.app`). Local `file://` pages cannot complete Supabase Auth redirects reliably.
 
-**Microsoft Edge “Tracking Prevention”:** Strict modes can block **third-party** storage (you may see warnings for `unpkg.com` / `cdn.jsdelivr.net` / `esm.sh`). Those messages are usually harmless for this app. If **first-party** storage for your Netlify origin is blocked, sign-in may not persist across reloads; try **Balanced** tracking prevention for your site or add an exception for your new-tab URL.
+**Microsoft Edge “Tracking Prevention”:** Lucide and Fuse are loaded from your own site (`assets/vendor/`). You may still see a few warnings for **`esm.sh`** when the Supabase client loads; that is expected and usually harmless. If **first-party** storage for your Netlify origin is blocked, sign-in may not persist across reloads; try **Balanced** tracking prevention or an exception for your new-tab URL.
+
+**Console noise that is not from this repo:** `runtime.lastError` / “message channel closed” / stack traces pointing at **`hook.js`** almost always come from a **browser extension** (ad blocker, password manager, React DevTools, etc.), not from the New Tab page. Test in an **InPrivate** window with extensions disabled to confirm a clean console.
+
+**Edge `[Intervention] Images loaded lazily`:** Link logos intentionally avoid `loading="lazy"` so this should be rare; if it still appears, it may be from another image on the page or another tab.
 
 **GoTrue lock warning (`lock:sb-…-auth-token` not released within 5000ms):** Usually means two auth operations hit **localStorage** at once (e.g. `getSession` overlapping the session callback). The app avoids redundant `getSession` calls during `onAuthStateChange` and uses a longer lock timeout. If you still see it occasionally on Edge, it is often recoverable (“forcefully acquiring the lock”).
 
