@@ -342,6 +342,30 @@ async function pullClickEventsFromSupabase() {
   syncDebugLog('pull finished', { rowsMerged: merged.length });
 }
 
+/**
+ * Run remote click pull without awaiting inside onAuthStateChange.
+ * Awaiting pull there blocks GoTrue's internal queue so initSupabase's getSession() can stall 10s+.
+ */
+function schedulePullClickEventsFromSupabase(label) {
+  void (async () => {
+    const t0 = performance.now();
+    syncDebugLog(`${label}: pull starting (background)`);
+    diagDebugLog(`supabase: ${label} pull started (background)`);
+    try {
+      await pullClickEventsFromSupabase();
+      if (allLinks.length) rerenderLinksFromState(allLinks);
+      const ms = Math.round(performance.now() - t0);
+      syncDebugLog(`${label}: pull done (background)`, { ms });
+      diagDebugLog(`supabase: ${label} pull finished (background)`, { ms });
+    } catch (e) {
+      const msg = e && e.message ? e.message : String(e);
+      syncDebugLog(`${label}: pull background error`, msg);
+      diagDebugLog(`supabase: ${label} pull threw`, msg);
+      console.warn('Click sync pull failed:', e);
+    }
+  })();
+}
+
 async function insertSupabaseClickEvent(url) {
   if (!supabaseClient || !supabaseProjectUrl || !supabaseAnonKey) {
     syncDebugLog('insert skipped', 'client or REST URL/key missing');
@@ -507,10 +531,7 @@ async function initSupabase() {
       // Avoid concurrent getSession() + storage lock: use session from callback; do not call getSession() in parallel here.
       if (event === 'INITIAL_SESSION') {
         if (session) {
-          syncDebugLog('INITIAL_SESSION: pull starting');
-          await pullClickEventsFromSupabase();
-          if (allLinks.length) rerenderLinksFromState(allLinks);
-          syncDebugLog('INITIAL_SESSION: pull done', { ms: Math.round(performance.now() - t0) });
+          schedulePullClickEventsFromSupabase('INITIAL_SESSION');
         } else {
           syncDebugLog('INITIAL_SESSION: no stored session');
         }
@@ -519,10 +540,7 @@ async function initSupabase() {
         return;
       }
       if (session && event === 'SIGNED_IN') {
-        syncDebugLog('SIGNED_IN: pull starting');
-        await pullClickEventsFromSupabase();
-        if (allLinks.length) rerenderLinksFromState(allLinks);
-        syncDebugLog('SIGNED_IN: pull done', { ms: Math.round(performance.now() - t0) });
+        schedulePullClickEventsFromSupabase('SIGNED_IN');
       }
       if (event === 'SIGNED_OUT') {
         if (allLinks.length) rerenderLinksFromState(allLinks);
