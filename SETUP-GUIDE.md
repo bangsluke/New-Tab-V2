@@ -10,7 +10,7 @@ Your new tab page must open from the **same HTTPS URL** on every device (for exa
 
 **Edge `[Intervention] Images loaded lazily`:** Link logos intentionally avoid `loading="lazy"` so this should be rare; if it still appears, it may be from another image on the page or another tab.
 
-**GoTrue lock warning (`lock:sb-…-auth-token` not released within 5000ms):** Usually means two auth operations hit **localStorage** at once (e.g. `getSession` overlapping the session callback). The app avoids redundant `getSession` calls during `onAuthStateChange` and uses a longer lock timeout. If you still see it occasionally on Edge, it is often recoverable (“forcefully acquiring the lock”).
+**GoTrue lock warning (`lock:sb-…-auth-token` not released within 5000ms):** The app passes a **custom auth `lock`** so GoTrue does not use the browser **Web Locks API** (which triggered that message on Edge). If an older deploy still shows it, redeploy. Trade-off: no cross-tab lock between two windows on the same origin (rare for a personal new tab).
 
 **Console 404 for `images`:** Often caused by **malformed `logo` strings** in `data/links.json` (e.g. angle brackets or stray `>` in the URL), which the browser treats as a path on your own site (`/images`). Invalid logos fall back to the letter placeholder and should no longer spam 404s.
 
