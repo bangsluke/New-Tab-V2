@@ -4,6 +4,8 @@ This project can sync link **click counts** across browsers and devices (for exa
 
 Your new tab page must open from the **same HTTPS URL** on every device (for example `https://your-site.netlify.app`). Local `file://` pages cannot complete Supabase Auth redirects reliably.
 
+**Microsoft Edge “Tracking Prevention”:** Strict modes can block **third-party** storage (you may see warnings for `unpkg.com` / `cdn.jsdelivr.net` / `esm.sh`). Those messages are usually harmless for this app. If **first-party** storage for your Netlify origin is blocked, sign-in may not persist across reloads; try **Balanced** tracking prevention for your site or add an exception for your new-tab URL.
+
 ---
 
 ## 1. Create a Supabase project
