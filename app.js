@@ -439,7 +439,6 @@ async function initSupabase() {
           syncDebugLog('INITIAL_SESSION: no stored session');
         }
         updateSyncAuthPanel(session);
-        logClickSyncConsole('Startup', session);
         syncDebugLog('INITIAL_SESSION: panel updated', { ms: Math.round(performance.now() - t0) });
         return;
       }
@@ -457,6 +456,21 @@ async function initSupabase() {
       if (event === 'SIGNED_OUT') logClickSyncConsole('Signed out', null);
       syncDebugLog('onAuthStateChange done', { event, ms: Math.round(performance.now() - t0) });
     });
+    // Single reliable "every visit" line: read session after listener is registered (storage + URL exchange may lag INITIAL_SESSION).
+    const { data: { session: visitSession } } = await supabaseClient.auth.getSession();
+    logClickSyncConsole('This visit', visitSession);
+    const visitEmail = visitSession?.user?.email ?? null;
+    const authReturnPending =
+      /[?&]code=/.test(location.search) || /access_token=/.test(location.hash);
+    if (authReturnPending && !visitEmail) {
+      setTimeout(async () => {
+        try {
+          const { data: { session: s1 } } = await supabaseClient.auth.getSession();
+          const e1 = s1?.user?.email ?? null;
+          if (e1 !== visitEmail) logClickSyncConsole('This visit (after auth redirect)', s1);
+        } catch (_) { /* ignore */ }
+      }, 1000);
+    }
   } catch (e) {
     syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
@@ -476,6 +490,7 @@ function updateSyncAuthPanel(sessionHint) {
   const sendBtn = document.getElementById('sync-auth-send');
   const outBtn = document.getElementById('sync-auth-out');
   const statusEl = document.getElementById('sync-auth-status');
+  const led = document.getElementById('sync-auth-led');
   if (!panel || !emailInput || !sendBtn || !outBtn) return;
 
   if (!supabaseClient) {
@@ -483,14 +498,25 @@ function updateSyncAuthPanel(sessionHint) {
     sendBtn.hidden = true;
     outBtn.hidden = true;
     if (statusEl) statusEl.textContent = '';
+    if (led) led.hidden = true;
     return;
   }
 
   const apply = (session) => {
-    const signedIn = Boolean(session);
+    const signedIn = Boolean(session?.user);
     emailInput.hidden = signedIn;
     sendBtn.hidden = signedIn;
     outBtn.hidden = !signedIn;
+    if (led) {
+      led.hidden = false;
+      led.classList.remove('sync-auth-led--signed-in', 'sync-auth-led--signed-out');
+      led.classList.add(signedIn ? 'sync-auth-led--signed-in' : 'sync-auth-led--signed-out');
+      const tip = signedIn && session.user?.email
+        ? `Signed in as ${session.user.email}`
+        : 'Not signed in — use Send link to sync clicks';
+      led.title = tip;
+      led.setAttribute('aria-label', `Click sync: ${tip}`);
+    }
     if (signedIn && session.user?.email) {
       emailInput.value = session.user.email;
       if (statusEl) statusEl.textContent = 'Signed in — clicks sync across devices.';
