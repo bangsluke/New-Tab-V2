@@ -342,12 +342,20 @@ async function pullClickEventsFromSupabase() {
   syncDebugLog('pull finished', { rowsMerged: merged.length });
 }
 
+/** One in-flight remote pull — GoTrue often fires SIGNED_IN then INITIAL_SESSION; both would duplicate fetch. */
+let clickSyncPullInFlight = null;
+
 /**
  * Run remote click pull without awaiting inside onAuthStateChange.
  * Awaiting pull there blocks GoTrue's internal queue so initSupabase's getSession() can stall 10s+.
  */
 function schedulePullClickEventsFromSupabase(label) {
-  void (async () => {
+  if (clickSyncPullInFlight) {
+    syncDebugLog(`${label}: pull skipped (batch already running)`);
+    diagDebugLog(`supabase: ${label} coalesced — reusing in-flight pull`);
+    return;
+  }
+  clickSyncPullInFlight = (async () => {
     const t0 = performance.now();
     syncDebugLog(`${label}: pull starting (background)`);
     diagDebugLog(`supabase: ${label} pull started (background)`);
@@ -362,6 +370,8 @@ function schedulePullClickEventsFromSupabase(label) {
       syncDebugLog(`${label}: pull background error`, msg);
       diagDebugLog(`supabase: ${label} pull threw`, msg);
       console.warn('Click sync pull failed:', e);
+    } finally {
+      clickSyncPullInFlight = null;
     }
   })();
 }
