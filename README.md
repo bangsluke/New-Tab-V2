@@ -17,6 +17,7 @@ A fast, local browser new-tab replacement page with a categorised link list, fuz
 - [Football Data](#football-data)
 - [Widgets & Extras](#widgets--extras)
 - [Deploying to Netlify](#deploying-to-netlify)
+- [Diagnostics (debugging)](#diagnostics-debugging)
 - [Tech Stack](#tech-stack)
 
 ## Features
@@ -202,6 +203,19 @@ The site is fully static — Netlify serves it directly. The build step generate
 > **Testing the build locally:** Run `npm run netlify` (with env vars set in your shell or `.env`) to verify the config files are generated correctly before pushing.
 
 > **Local football data:** The football API is proxied through a Netlify Function — it won't work with `npx serve .`. Run `npm run dev:netlify` to serve the site with Functions support for local testing.
+
+## Diagnostics (debugging)
+
+Use these when something fails silently in the browser (e.g. Edge hiding normal `console.log` lines, weather stuck on “Fetching…”, or Supabase click sync acting odd).
+
+| How to enable | What it does |
+|---------------|----------------|
+| **`?debug=1`** on the URL (e.g. `https://your-site.netlify.app/?debug=1`) | Turns on full diagnostics: persists **`ntv2-debug`** and **`ntv2-sync-debug`** in `localStorage`, strips the query param from the address bar, opens the on-page **Sync debug** panel, and emits **`console.warn('[New Tab V2 debug]', …)`** lines so messages show under Microsoft Edge’s default console filters (alongside Tracking Prevention warnings). Logs bootstrap timing, weather/geolocation steps, and Supabase config/import/session work. |
+| **`?syncDebug=1`** | Sync-focused logging only; sets **`ntv2-sync-debug`** and opens the same panel. Less noise than `?debug=1`. |
+
+**Turn off:** use **Turn off** in the debug panel (clears both keys), or remove `ntv2-debug` / `ntv2-sync-debug` from `localStorage` in DevTools.
+
+**Production tip:** After the first visit with `?debug=1`, you can reload without the query string — the flag stays on until you turn it off.
 
 ## Tech Stack
 
