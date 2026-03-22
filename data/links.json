@@ -1442,6 +1442,20 @@
     "tags": []
   },
   {
+    "order": 8,
+    "name": "Ant Sports",
+    "url": "https://antsports.tv/",
+    "category": "TV",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJRGILQupjXVqOOw415kyEZcmJR3leMh9TrQ&s",
+    "projectLink": "",
+    "umamiId": null,
+    "umamiDashboardUrl": null,
+    "tags": [
+      "Football",
+      "Sports"
+    ]
+  },
+  {
     "order": 9,
     "name": "localhost:5500",
     "url": "http://localhost:5500/",

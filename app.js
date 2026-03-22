@@ -470,21 +470,14 @@ async function importSupabaseEsModule() {
   ]);
 }
 
-/** One-line console hint: click-sync sign-in state (email or not signed in). */
+/** Click-sync session line in console — only when ?debug=1 or ?syncDebug=1 (see README). */
 function logClickSyncConsole(tag, session) {
+  if (!anyDebugPanelEnabled()) return;
   const prefix = '[New Tab V2] Click sync';
-  // Use console.info (not .log): Chromium/Edge classify console.log as "Verbose", often hidden by default
-  // while Tracking Prevention etc. show as Warnings — so users saw no ntv2 lines.
   if (session?.user?.email) {
-    console.info(prefix + ':', tag, '— signed in as', session.user.email);
-    if (diagDebugEnabled()) {
-      console.warn('[New Tab V2 debug]', `${prefix}: ${tag} — signed in as ${session.user.email}`);
-    }
+    console.warn('[New Tab V2 debug]', `${prefix}: ${tag} — signed in as ${session.user.email}`);
   } else {
-    console.info(prefix + ':', tag, '— not signed in');
-    if (diagDebugEnabled()) {
-      console.warn('[New Tab V2 debug]', `${prefix}: ${tag} — not signed in`);
-    }
+    console.warn('[New Tab V2 debug]', `${prefix}: ${tag} — not signed in`);
   }
 }
 
@@ -604,6 +597,7 @@ function updateSyncAuthPanel(sessionHint) {
   const outBtn = document.getElementById('sync-auth-out');
   const statusEl = document.getElementById('sync-auth-status');
   const led = document.getElementById('sync-auth-led');
+  const headerLed = document.getElementById('header-sync-led');
   if (!panel || !emailInput || !sendBtn || !outBtn) return;
 
   if (!supabaseClient) {
@@ -612,6 +606,7 @@ function updateSyncAuthPanel(sessionHint) {
     outBtn.hidden = true;
     if (statusEl) statusEl.textContent = '';
     if (led) led.hidden = true;
+    if (headerLed) headerLed.hidden = true;
     return;
   }
 
@@ -620,15 +615,25 @@ function updateSyncAuthPanel(sessionHint) {
     emailInput.hidden = signedIn;
     sendBtn.hidden = signedIn;
     outBtn.hidden = !signedIn;
+    const headerTip = signedIn
+      ? 'Link click counts are syncing to your account across devices.'
+      : 'Link click counts are only stored on this browser. Use Sync clicks below and sign in to sync across devices.';
+    const panelTip = signedIn && session.user?.email
+      ? `Signed in as ${session.user.email}`
+      : 'Not signed in — use Send link to sync clicks';
+    for (const dot of [led, headerLed]) {
+      if (!dot) continue;
+      dot.hidden = false;
+      dot.classList.remove('sync-auth-led--signed-in', 'sync-auth-led--signed-out');
+      dot.classList.add(signedIn ? 'sync-auth-led--signed-in' : 'sync-auth-led--signed-out');
+    }
     if (led) {
-      led.hidden = false;
-      led.classList.remove('sync-auth-led--signed-in', 'sync-auth-led--signed-out');
-      led.classList.add(signedIn ? 'sync-auth-led--signed-in' : 'sync-auth-led--signed-out');
-      const tip = signedIn && session.user?.email
-        ? `Signed in as ${session.user.email}`
-        : 'Not signed in — use Send link to sync clicks';
-      led.title = tip;
-      led.setAttribute('aria-label', `Click sync: ${tip}`);
+      led.title = panelTip;
+      led.setAttribute('aria-label', `Click sync: ${panelTip}`);
+    }
+    if (headerLed) {
+      headerLed.title = headerTip;
+      headerLed.setAttribute('aria-label', signedIn ? 'Links syncing across devices' : 'Links not syncing — sign in below');
     }
     if (signedIn && session.user?.email) {
       emailInput.value = session.user.email;
