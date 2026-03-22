@@ -378,6 +378,16 @@ async function importSupabaseEsModule() {
   ]);
 }
 
+/** One-line console hint: click-sync sign-in state (email or not signed in). */
+function logClickSyncConsole(tag, session) {
+  const prefix = '[New Tab V2] Click sync';
+  if (session?.user?.email) {
+    console.log(prefix + ':', tag, '— signed in as', session.user.email);
+  } else {
+    console.log(prefix + ':', tag, '— not signed in');
+  }
+}
+
 async function initSupabase() {
   const cfg = await loadSupabaseConfig();
   if (!cfg.enabled || !cfg.url || !cfg.anonKey) {
@@ -386,6 +396,9 @@ async function initSupabase() {
         ? 'disabled in data/supabase-config.json (set SUPABASE_URL + SUPABASE_ANON_KEY on Netlify and redeploy)'
         : 'missing url or anonKey in config',
     });
+    console.log(
+      '[New Tab V2] Click sync: disabled — no Supabase URL/key in config (set SUPABASE_URL + SUPABASE_ANON_KEY on Netlify and redeploy).',
+    );
     return;
   }
   supabaseProjectUrl = cfg.url;
@@ -424,6 +437,7 @@ async function initSupabase() {
           syncDebugLog('INITIAL_SESSION: no stored session');
         }
         updateSyncAuthPanel(session);
+        logClickSyncConsole('Startup', session);
         syncDebugLog('INITIAL_SESSION: panel updated', { ms: Math.round(performance.now() - t0) });
         return;
       }
@@ -437,11 +451,14 @@ async function initSupabase() {
         if (allLinks.length) rerenderLinksFromState(allLinks);
       }
       updateSyncAuthPanel(session);
+      if (event === 'SIGNED_IN') logClickSyncConsole('Signed in', session);
+      if (event === 'SIGNED_OUT') logClickSyncConsole('Signed out', null);
       syncDebugLog('onAuthStateChange done', { event, ms: Math.round(performance.now() - t0) });
     });
   } catch (e) {
     syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
+    console.log('[New Tab V2] Click sync: unavailable — initialization failed (see warning above).');
     supabaseClient = null;
     supabaseProjectUrl = null;
     supabaseAnonKey = null;
