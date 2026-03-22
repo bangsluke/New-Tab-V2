@@ -217,6 +217,8 @@ Use these when something fails silently in the browser (e.g. Edge hiding normal 
 
 **Production tip:** After the first visit with `?debug=1`, you can reload without the query string — the flag stays on until you turn it off.
 
+**Console noise that is not this app:** Microsoft Edge’s **Tracking Prevention blocked access to storage** lines refer to third-party origins (e.g. remote favicons), not your Netlify tab. Errors like **`runtime.lastError`** / **message channel closed** usually come from a **browser extension** (password manager, ad blocker, React DevTools, etc.); try an incognito window with extensions disabled to confirm.
+
 ## Tech Stack
 
 | Concern | Solution |
