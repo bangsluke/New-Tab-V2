@@ -123,6 +123,82 @@ function resetRecentByPeriod(periodMs) {
 function getSortMode() { return localStorage.getItem(SORT_KEY) || 'frequency'; }
 function setSortMode(m) { localStorage.setItem(SORT_KEY, m); }
 
+// ── Sync debug (URL ?syncDebug=1 or localStorage ntv2-sync-debug=1) ─────────
+const SYNC_DEBUG_STORAGE_KEY = 'ntv2-sync-debug';
+
+function initSyncDebugFromUrl() {
+  try {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('syncDebug') === '1') {
+      localStorage.setItem(SYNC_DEBUG_STORAGE_KEY, '1');
+      const u = new URL(window.location.href);
+      u.searchParams.delete('syncDebug');
+      history.replaceState({}, '', `${u.pathname}${u.search}${u.hash}`);
+    }
+  } catch { /* ignore */ }
+}
+
+function syncDebugEnabled() {
+  try {
+    return localStorage.getItem(SYNC_DEBUG_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function syncDebugLog(message, detail) {
+  if (!syncDebugEnabled()) return;
+  const t = new Date().toISOString().slice(11, 23);
+  let line = `[${t}] ${message}`;
+  if (detail !== undefined) {
+    try {
+      line += typeof detail === 'string' ? ` ${detail}` : ` ${JSON.stringify(detail)}`;
+    } catch {
+      line += ' [unserializable detail]';
+    }
+  }
+  console.log('[sync-debug]', line);
+  const pre = document.getElementById('sync-debug-log');
+  if (pre) {
+    pre.textContent += `${line}\n`;
+    pre.scrollTop = pre.scrollHeight;
+  }
+}
+
+function initSyncDebugUI() {
+  const panel = document.getElementById('sync-debug-panel');
+  const copyBtn = document.getElementById('sync-debug-copy');
+  const clearBtn = document.getElementById('sync-debug-clear');
+  const offBtn = document.getElementById('sync-debug-disable');
+  if (!panel || !copyBtn || !clearBtn || !offBtn) return;
+  if (syncDebugEnabled()) panel.removeAttribute('hidden');
+
+  copyBtn.addEventListener('click', async () => {
+    const pre = document.getElementById('sync-debug-log');
+    const text = pre ? pre.textContent : '';
+    try {
+      await navigator.clipboard.writeText(text);
+      syncDebugLog('Copied log to clipboard');
+    } catch {
+      syncDebugLog('Copy to clipboard failed (try selecting text manually)');
+    }
+  });
+  clearBtn.addEventListener('click', () => {
+    const pre = document.getElementById('sync-debug-log');
+    if (pre) pre.textContent = '';
+    syncDebugLog('Log cleared');
+  });
+  offBtn.addEventListener('click', () => {
+    try {
+      localStorage.removeItem(SYNC_DEBUG_STORAGE_KEY);
+    } catch { /* ignore */ }
+    panel.setAttribute('hidden', '');
+    const pre = document.getElementById('sync-debug-log');
+    if (pre) pre.textContent = '';
+    console.log('[sync-debug] disabled');
+  });
+}
+
 // ── Supabase (optional cross-device click sync) ─────────────────────────────
 let supabaseClient = null;
 /** Set when sync is enabled — used for keepalive REST inserts (survives navigation). */
@@ -132,9 +208,24 @@ let supabaseAnonKey = null;
 async function loadSupabaseConfig() {
   try {
     const res = await fetch('data/supabase-config.json');
-    if (!res.ok) return { enabled: false };
-    return await res.json();
-  } catch {
+    if (!res.ok) {
+      syncDebugLog('fetch data/supabase-config.json failed', { status: res.status, statusText: res.statusText });
+      return { enabled: false };
+    }
+    const cfg = await res.json();
+    let urlHost = null;
+    try {
+      if (cfg.url) urlHost = new URL(cfg.url).hostname;
+    } catch { /* ignore */ }
+    syncDebugLog('supabase config', {
+      enabled: Boolean(cfg.enabled),
+      hasUrl: Boolean(cfg.url),
+      hasAnonKey: Boolean(cfg.anonKey),
+      urlHost,
+    });
+    return cfg;
+  } catch (e) {
+    syncDebugLog('loadSupabaseConfig error', e && e.message ? e.message : String(e));
     return { enabled: false };
   }
 }
@@ -155,9 +246,16 @@ function mergeRemoteClickRowsIntoLocal(rows) {
 }
 
 async function pullClickEventsFromSupabase() {
-  if (!supabaseClient) return;
+  if (!supabaseClient) {
+    syncDebugLog('pull skipped', 'no supabaseClient');
+    return;
+  }
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if (!session) return;
+  if (!session) {
+    syncDebugLog('pull skipped', 'no session');
+    return;
+  }
+  syncDebugLog('pull started', { userId: session.user.id });
   const merged = [];
   let from = 0;
   const pageSize = 1000;
@@ -168,6 +266,12 @@ async function pullClickEventsFromSupabase() {
       .order('clicked_at', { ascending: true })
       .range(from, from + pageSize - 1);
     if (error) {
+      syncDebugLog('pull error', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
       console.warn('Supabase pull failed:', error.message);
       return;
     }
@@ -177,13 +281,21 @@ async function pullClickEventsFromSupabase() {
     from += pageSize;
   }
   mergeRemoteClickRowsIntoLocal(merged);
+  syncDebugLog('pull finished', { rowsMerged: merged.length });
 }
 
 async function insertSupabaseClickEvent(url) {
-  if (!supabaseClient || !supabaseProjectUrl || !supabaseAnonKey) return;
+  if (!supabaseClient || !supabaseProjectUrl || !supabaseAnonKey) {
+    syncDebugLog('insert skipped', 'client or REST URL/key missing');
+    return;
+  }
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) return;
+    if (!session) {
+      syncDebugLog('insert skipped', 'not signed in');
+      return;
+    }
+    syncDebugLog('insert POST', { urlLen: url.length, urlPreview: url.slice(0, 96) });
     // keepalive so the request can finish when the link navigates away
     const res = await fetch(`${supabaseProjectUrl}/rest/v1/link_click_events`, {
       method: 'POST',
@@ -200,8 +312,18 @@ async function insertSupabaseClickEvent(url) {
         clicked_at: new Date().toISOString(),
       }),
     });
-    if (!res.ok) console.warn('Supabase insert failed:', res.status);
+    if (!res.ok) {
+      let body = '';
+      try {
+        body = (await res.text()).slice(0, 800);
+      } catch { /* ignore */ }
+      syncDebugLog('insert failed HTTP', { status: res.status, body });
+      console.warn('Supabase insert failed:', res.status, body);
+    } else {
+      syncDebugLog('insert OK', { status: res.status });
+    }
   } catch (e) {
+    syncDebugLog('insert exception', e && e.message ? e.message : String(e));
     console.warn('Supabase insert failed:', e && e.message ? e.message : e);
   }
 }
@@ -230,10 +352,18 @@ async function resetSupabaseClicksForRange(range) {
 
 async function initSupabase() {
   const cfg = await loadSupabaseConfig();
-  if (!cfg.enabled || !cfg.url || !cfg.anonKey) return;
+  if (!cfg.enabled || !cfg.url || !cfg.anonKey) {
+    syncDebugLog('Supabase not initialized', {
+      reason: !cfg.enabled
+        ? 'disabled in data/supabase-config.json (set SUPABASE_URL + SUPABASE_ANON_KEY on Netlify and redeploy)'
+        : 'missing url or anonKey in config',
+    });
+    return;
+  }
   supabaseProjectUrl = cfg.url;
   supabaseAnonKey = cfg.anonKey;
   try {
+    syncDebugLog('Loading @supabase/supabase-js from esm.sh…');
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
     supabaseClient = createClient(cfg.url, cfg.anonKey, {
       auth: {
@@ -242,7 +372,13 @@ async function initSupabase() {
         flowType: 'pkce',
       },
     });
+    syncDebugLog('createClient OK');
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      syncDebugLog('onAuthStateChange', {
+        event,
+        hasSession: Boolean(session),
+        email: session?.user?.email || null,
+      });
       if (event === 'INITIAL_SESSION') {
         updateSyncAuthPanel();
         return;
@@ -257,8 +393,10 @@ async function initSupabase() {
       updateSyncAuthPanel();
     });
     const { data: { session } } = await supabaseClient.auth.getSession();
+    syncDebugLog('getSession after init', { hasSession: Boolean(session), email: session?.user?.email || null });
     if (session) await pullClickEventsFromSupabase();
   } catch (e) {
+    syncDebugLog('Supabase init failed', e && e.message ? e.message : String(e));
     console.warn('Supabase init failed:', e && e.message ? e.message : e);
     supabaseClient = null;
     supabaseProjectUrl = null;
@@ -312,15 +450,21 @@ function initSyncAuthUI() {
     statusEl.textContent = 'Sending link…';
     statusEl.dataset.pending = '1';
     const redirect = `${window.location.origin}${window.location.pathname}`;
+    syncDebugLog('signInWithOtp', {
+      emailDomain: email.includes('@') ? email.split('@')[1] : '?',
+      emailRedirectTo: redirect,
+    });
     const { error } = await supabaseClient.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: redirect },
     });
     delete statusEl.dataset.pending;
     if (error) {
+      syncDebugLog('signInWithOtp error', { message: error.message, status: error.status });
       statusEl.textContent = error.message || 'Could not send link.';
       return;
     }
+    syncDebugLog('signInWithOtp sent', 'check email inbox');
     statusEl.textContent = 'Check your email for the sign-in link.';
   });
 
@@ -1831,6 +1975,15 @@ async function initCryptoBtcGbp() {
       }
     });
   }
+
+  initSyncDebugFromUrl();
+  initSyncDebugUI();
+  syncDebugLog('page load', {
+    origin: location.origin,
+    pathname: location.pathname,
+    oauthCodeInSearch: /[?&]code=/.test(location.search),
+    hashFragmentChars: location.hash.length,
+  });
 
   migrateClickCounts();
   initFooter();

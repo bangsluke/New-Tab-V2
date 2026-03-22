@@ -78,6 +78,62 @@ Rows store **clicked URLs** and timestamps. That is appropriate for a private st
 
 ---
 
+## 8. Step-by-step testing (and why rows might be missing)
+
+Work through these in order. If anything fails, use **sync debug** (next section).
+
+1. **Confirm the live site actually has Supabase turned on**  
+   In a normal browser tab (not necessarily the new-tab override), open:
+   `https://YOUR-SITE.netlify.app/data/supabase-config.json`  
+   You should see `"enabled": true` plus a `url` and `anonKey`. If you see `"enabled": false`, the Netlify build did not receive `SUPABASE_URL` / `SUPABASE_ANON_KEY`, or the site was not redeployed after setting them.
+
+2. **Use the same HTTPS origin everywhere**  
+   Edge and Safari must open **exactly** the deployed URL (e.g. `https://yoursite.netlify.app/`). If the new-tab setting points at a different host, a `file://` page, or a cached old deploy, auth and config will not match.
+
+3. **Run the SQL migration**  
+   In Supabase SQL Editor, run [`supabase/migrations/001_link_click_events.sql`](supabase/migrations/001_link_click_events.sql). Without the table and RLS policies, inserts return errors (visible in sync debug).
+
+4. **Redirect URLs**  
+   Under **Authentication → URL Configuration**, **Redirect URLs** must include your live new-tab URL (path included if you use one, e.g. `https://yoursite.netlify.app/`). The app sends magic links with `emailRedirectTo` = `origin + pathname`.
+
+5. **Sign in on device A (e.g. Edge)**  
+   Use **Sync clicks** → enter email → **Send link** → complete the email link. After return, the status line should say you are signed in.
+
+6. **Insert test**  
+   While signed in, click a normal link card (one that navigates away). The app POSTs a row to `link_click_events`. Check **Supabase → Table Editor → link_click_events** within a few seconds.
+
+7. **Sign in on device B (e.g. Safari)**  
+   Open the **same** site URL, sign in with the **same** email, complete the magic link. Reload once. Counts are merged from the server into `localStorage` on pull; they are not read from Postgres on every paint.
+
+**Common reasons for zero rows**
+
+| Symptom | Likely cause |
+|--------|----------------|
+| `supabase-config.json` has `enabled: false` | Env vars missing on Netlify or no redeploy after adding them. |
+| Debug shows `insert skipped` / `not signed in` | Session not established (magic link not completed, or redirect blocked). |
+| Debug shows `insert failed HTTP` 401 | Expired or missing JWT; sign out and sign in again. |
+| Debug shows 404 / RLS error in body | Table or policies missing; wrong project URL/key. |
+| Works on desktop, not phone | Different URL, private browsing, or stricter storage (try non-private Safari). |
+
+---
+
+## 9. Sync debug (on-page log)
+
+To trace sync without desktop DevTools (useful on mobile):
+
+1. Open your new tab page with query **`?syncDebug=1`** (e.g. `https://yoursite.netlify.app/?syncDebug=1`).  
+   That flag is saved to `localStorage` as `ntv2-sync-debug=1` and the query is removed from the address bar so it survives magic-link redirects.
+
+2. Scroll to **Links** → under the links grid you should see a **Sync debug** panel with a scrolling log.
+
+3. Reproduce: sign in, click a link, open on the second device. Use **Copy log** to paste into a note if you need to compare devices.
+
+4. **Turn off** when finished (clears the flag and hides the panel).
+
+Alternatively, from DevTools console: `localStorage.setItem('ntv2-sync-debug','1')` then reload.
+
+---
+
 ## Reference: what the code should do (checklist)
 
 - [ ] Build writes `data/supabase-config.json` when env vars are present.

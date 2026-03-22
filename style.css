@@ -787,6 +787,59 @@ main {
   font-size: 0.7rem;
   opacity: 0.9;
 }
+
+.sync-debug-panel {
+  flex-basis: 100%;
+  max-width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(129, 140, 248, 0.35);
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 0.65rem;
+  color: rgba(230, 230, 250, 0.9);
+}
+.sync-debug-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.sync-debug-title {
+  font-size: 0.7rem;
+}
+.sync-debug-hint {
+  flex: 1 1 100%;
+  opacity: 0.75;
+  font-size: 0.6rem;
+  line-height: 1.35;
+}
+.sync-debug-hint code {
+  font-size: 0.58rem;
+  opacity: 0.95;
+}
+.sync-debug-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.45rem;
+  cursor: pointer;
+}
+.sync-debug-log {
+  margin: 0;
+  max-height: 14rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, monospace;
+  font-size: 0.58rem;
+  line-height: 1.4;
+  color: rgba(200, 220, 255, 0.95);
+}
 .reset-stats-btn {
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.15);
