@@ -100,11 +100,12 @@ function getClickCounts() {
   return counts;
 }
 function incrementClickCount(url) {
+  const clickedAtMs = Date.now();
   const data = getRawClickData();
   if (!Array.isArray(data[url])) data[url] = [];
-  data[url].push(Date.now());
+  data[url].push(clickedAtMs);
   localStorage.setItem(CLICKS_KEY, JSON.stringify(data));
-  void insertSupabaseClickEvent(url);
+  void insertSupabaseClickEvent(url, clickedAtMs);
 }
 function resetClicksByPeriod(periodMs) {
   const cutoff = Date.now() - periodMs;
@@ -288,19 +289,49 @@ async function loadSupabaseConfig() {
   }
 }
 
-function mergeRemoteClickRowsIntoLocal(rows) {
-  const local = getRawClickData();
+/** Dedupe + sort timestamp arrays from raw localStorage click map (arrays only). */
+function normalizeClickTimestampArrays(raw) {
+  const out = {};
+  for (const [url, ts] of Object.entries(raw)) {
+    if (!Array.isArray(ts) || !ts.length) continue;
+    const cleaned = ts.filter((t) => Number.isFinite(t));
+    if (!cleaned.length) continue;
+    out[url] = [...new Set(cleaned)].sort((a, b) => a - b);
+  }
+  return out;
+}
+
+/** Group Supabase rows into per-URL sorted unique millisecond timestamps. */
+function remoteClickRowsToTimestampMap(rows) {
+  const byUrl = {};
   for (const row of rows) {
     const url = row.url;
-    const ts = new Date(row.clicked_at).getTime();
-    if (!Number.isFinite(ts)) continue;
-    if (!Array.isArray(local[url])) local[url] = [];
-    local[url].push(ts);
+    const ms = new Date(row.clicked_at).getTime();
+    if (!Number.isFinite(ms)) continue;
+    if (!Array.isArray(byUrl[url])) byUrl[url] = [];
+    byUrl[url].push(ms);
   }
-  for (const url of Object.keys(local)) {
-    local[url] = [...new Set(local[url])].sort((a, b) => a - b);
+  for (const url of Object.keys(byUrl)) {
+    byUrl[url] = [...new Set(byUrl[url])].sort((a, b) => a - b);
   }
-  localStorage.setItem(CLICKS_KEY, JSON.stringify(local));
+  return byUrl;
+}
+
+/**
+ * Merge server click events into localStorage using max(localCount, remoteCount) per URL.
+ * If local has more timestamps (e.g. offline clicks not yet synced), keep local; otherwise use remote.
+ */
+function mergeRemoteClickRowsIntoLocal(rows) {
+  const local = normalizeClickTimestampArrays(getRawClickData());
+  const remote = remoteClickRowsToTimestampMap(rows);
+  const urls = new Set([...Object.keys(local), ...Object.keys(remote)]);
+  const merged = {};
+  for (const url of urls) {
+    const loc = local[url] || [];
+    const rem = remote[url] || [];
+    merged[url] = loc.length > rem.length ? loc : rem;
+  }
+  localStorage.setItem(CLICKS_KEY, JSON.stringify(merged));
 }
 
 async function pullClickEventsFromSupabase() {
@@ -376,11 +407,12 @@ function schedulePullClickEventsFromSupabase(label) {
   })();
 }
 
-async function insertSupabaseClickEvent(url) {
+async function insertSupabaseClickEvent(url, clickedAtMs) {
   if (!supabaseClient || !supabaseProjectUrl || !supabaseAnonKey) {
     syncDebugLog('insert skipped', 'client or REST URL/key missing');
     return;
   }
+  const ms = Number.isFinite(clickedAtMs) ? clickedAtMs : Date.now();
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
@@ -401,7 +433,7 @@ async function insertSupabaseClickEvent(url) {
       body: JSON.stringify({
         user_id: session.user.id,
         url,
-        clicked_at: new Date().toISOString(),
+        clicked_at: new Date(ms).toISOString(),
       }),
     });
     if (!res.ok) {
