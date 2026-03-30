@@ -1,6 +1,6 @@
 # Setup guide — Supabase click sync (after code implementation)
 
-This project can sync link **click counts** across browsers and devices (for example Microsoft Edge on a laptop and Safari on an iPhone) using **Supabase** as the source of truth. Complete these steps **after** the implementation that reads `data/supabase-config.json` and wires the Supabase client is merged.
+This project can sync link **click counts** across browsers and devices (for example Microsoft Edge on a laptop and Safari on an iPhone) using **Supabase** to store per-click rows and reconcile with local storage. After each pull, each URL’s count is **max(local, remote)** so you do not lose totals when site data is cleared, as long as you sign in again and the server still has the events. Complete these steps **after** the implementation that reads `data/supabase-config.json` and wires the Supabase client is merged.
 
 Your new tab page must open from the **same HTTPS URL** on every device (for example `https://your-site.netlify.app`). Local `file://` pages cannot complete Supabase Auth redirects reliably.
 
@@ -113,7 +113,9 @@ Work through these in order. If anything fails, use **sync debug** (next section
    While signed in, click a normal link card (one that navigates away). The app POSTs a row to `link_click_events`. Check **Supabase → Table Editor → link_click_events** within a few seconds.
 
 7. **Sign in on device B (e.g. Safari)**  
-   Open the **same** site URL, sign in with the **same** email, complete the magic link. Reload once. Counts are merged from the server into `localStorage` on pull; they are not read from Postgres on every paint.
+   Open the **same** site URL, sign in with the **same** email, complete the magic link. Reload once. On pull, counts are written into `localStorage` using **max(local, remote)** per URL (if local has more timestamps than the server — e.g. offline clicks — local wins; otherwise server data is used). The UI still reads from `localStorage`, not Postgres on every paint.
+
+**Clearing cookies / site data:** That wipes `localStorage` (including `ntv2-click-counts`) and usually the Supabase session. Counts show as zero until you **sign in again**; the next successful pull restores totals from `link_click_events`. Each click uses the same timestamp locally and in the insert to avoid double-counting from clock skew.
 
 **Common reasons for zero rows**
 
@@ -148,7 +150,7 @@ Alternatively, from DevTools console: `localStorage.setItem('ntv2-sync-debug','1
 
 - [ ] Build writes `data/supabase-config.json` when env vars are present.
 - [ ] App loads config, initializes Supabase only when `enabled`.
-- [ ] Signed-in user: pull events, merge into local click map, re-render.
+- [ ] Signed-in user: pull events, merge into local click map (**max(local, remote)** per URL), re-render.
 - [ ] Each click: local increment + insert row (when session exists).
 - [ ] Reset-by-period (and full reset): local trim + matching deletes in Supabase when signed in.
 
