@@ -13,6 +13,6 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "netlify-cli": "^24.0.1"
+    "netlify-cli": "^24.9.0"
   }
 }
