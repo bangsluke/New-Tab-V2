@@ -1,72 +1,112 @@
-# New Tab V2
+<p align="center">
+  <img src="./assets/favicon-96x96.png" alt="New Tab V2 Logo" height="100"/>
+</p>
 
-A fast, local browser new-tab replacement page with a categorised link list, fuzzy search, Umami analytics trends, and a weather widget.
+<h1 align="center">New Tab V2</h1>
+
+<p align="center">
+  <strong>Local-first new tab dashboard</strong> with categorized links, fuzzy search, weather, analytics, and utility widgets in a glassmorphism interface.
+</p>
+
+<p align="center">
+  <a href="#project-overview">🌐 Project Overview</a> •
+  <a href="#quick-start">💻 Quick Start</a> •
+  <a href="#key-features">✨ Features</a> •
+  <a href="#tech-stack">🛠️ Tech Stack</a> •
+  <a href="#architecture">🏗️ Architecture</a> •
+  <a href="./SETUP-GUIDE.md">📚 Setup Guide</a>
+</p>
+
+<p align="center">
+<a href="https://app.netlify.com/projects/bangsluke-new-tab/deploys" style="text-decoration: none;">
+    <img src="https://api.netlify.com/api/v1/badges/e12ea42c-5b9b-4fbe-a75a-d1adf7d58eea/deploy-status" alt="Netlify Status" />
+  </a>
+  <img src="https://img.shields.io/badge/JavaScript-ESModules-yellow?logo=javascript" alt="JavaScript ES Modules" />
+  <img src="https://img.shields.io/badge/Netlify-Functions-00C7B7?logo=netlify" alt="Netlify Functions" />
+  <img src="https://img.shields.io/badge/Fuse.js-FuzzySearch-blue" alt="Fuse.js" />
+  <img src="https://img.shields.io/badge/Open--Meteo-WeatherAPI-5B9BD5" alt="Open-Meteo" />
+</p>
+
+<p align="center">
+  <img src="./assets/New-Tab-V2.png" alt="New Tab V2 Screenshot" height="500"/>
+</p>
 
 ## Table of Contents
 
-- [Features](#features)
-- [File Structure](#file-structure)
-- [Setup](#setup)
-  - [Install dependencies](#1-install-dependencies)
-  - [Configure](#2-configure)
-  - [Set up Umami (optional)](#3-set-up-umami-optional)
-  - [Generate data files](#4-generate-data-files)
-  - [Open in browser](#5-open-in-browser)
-- [Obsidian Table Format](#obsidian-table-format)
-- [Configuration Reference](#configuration-reference)
-- [Football Data](#football-data)
-- [Widgets & Extras](#widgets--extras)
-- [Deploying to Netlify](#deploying-to-netlify)
-- [Diagnostics (debugging)](#diagnostics-debugging)
+- [Table of Contents](#table-of-contents)
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
+- [Screenshots](#screenshots)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+  - [1. Install dependencies](#1-install-dependencies)
+  - [2. Configure Obsidian source](#2-configure-obsidian-source)
+  - [3. (Optional) Add API keys](#3-optional-add-api-keys)
+  - [4. Generate local data files](#4-generate-local-data-files)
+  - [5. Run locally](#5-run-locally)
+- [Configuration](#configuration)
+  - [Obsidian Source Config](#obsidian-source-config)
+  - [Environment Variables](#environment-variables)
+  - [Obsidian Table Format](#obsidian-table-format)
+- [Widgets and Extras](#widgets-and-extras)
+- [Football Data](#football-data)
+- [Deploying to Netlify](#deploying-to-netlify)
+- [Diagnostics (Debugging)](#diagnostics-debugging)
+- [File Structure](#file-structure)
 
-## Features
+## Project Overview
 
-- **Links list** — sourced from a local Obsidian markdown file, grouped by category, with optional circular logos
-- **Tab layout** — Links tab (search, sort, links) and Extra tab (Premier League table + Liverpool fixtures); active tab persists in localStorage
-- **Sort toggle** — switch between Frequency (flat grid sorted by click count + A–Z tiebreaker) and Grouping (category headers with Recent group at top); sort bar is hidden by default — click the gear icon (⚙) in the search bar to reveal it; buttons span the full grid width, smaller font on mobile
-- **Recently visited** — Google searches made from the search bar appear as a "Recent" group in Grouping mode (stored in localStorage); links from the main list stay in their original category
-- **Click tracking** — every link click increments a count, shown with a pointer cursor SVG + count on every card; click timestamps stored in localStorage (`ntv2-click-counts`) to support time-range resets; ↺ Reset stats button opens a modal with options: past hour / 24 h / week / all stats; modal shows a confirmation message after resetting (title + time frame covered), then auto-closes after 1.5 s. With optional Supabase sync ([SETUP-GUIDE.md](SETUP-GUIDE.md)), after each pull the app keeps the **higher** per-URL count between local storage and the server (so clearing site data then signing in again restores counts from Supabase unless local already had more clicks).
-- **Umami stats** — per-link icon + count + diff-in-brackets + ▲/▼ indicator; metric (Visitors / Pageviews / Visits) and time period (24 h / 7 d / 30 d) toggle buttons in the sort bar; defaults to 30 d; metric switch is instant from cache, period switch re-fetches from API; metric, period, sort mode, and sort bar visibility all persist in localStorage
-- **Fuzzy search** — Fuse.js powered, searches link name and category (typo-tolerant); auto-focused on page load; Enter opens a Google search in a new tab
-- **Weather widget** — expanded by default on desktop (>600 px), collapsed on mobile; click to toggle; shows 24-hour strip + 7-day forecast via Open-Meteo (no API key required)
-- **Glassmorphism UI** — backdrop blur cards, responsive 3-column grid on desktop / 1 column on mobile
-- **Scroll-to-top FAB** — appears after scrolling 10% of page height
-- **Footer** — dynamic current year, GitHub link, mailto envelope icon
-- **New widgets (Tab 2)** — Premier League table + Liverpool fixtures, GitHub contribution heatmap for `bangsluke`, daily BBC News and BBC Sport headlines, and a BTC→GBP price widget with quick range toggles
+New Tab V2 replaces a default browser tab with a locally controlled dashboard that prioritizes quick access, low friction search, and useful at-a-glance context.
 
-## File Structure
+The app reads links from an Obsidian markdown table, enriches them with optional analytics and click data, and presents everything in a responsive two-tab layout:
+- `Links` tab for search, sorting, and link usage
+- `Extra` tab for weather, football, news, GitHub activity, and BTC/GBP market context
 
-```
-New-Tab-V2/
-├── assets/
-│   └── bg.jpg                  # Background image
-├── config/
-│   └── config.yaml             # Source file path + heading name config
-├── data/
-│   ├── links.json              # GENERATED locally — committed (no secrets)
-│   ├── umami-config.json       # GENERATED — gitignored (contains API key)
-│   └── football-config.json    # GENERATED — gitignored (contains API key)
-├── prompts/                    # Project planning docs
-├── netlify/
-│   └── functions/
-│       └── football.js         # Serverless proxy — forwards football API calls server-side
-├── scripts/
-│   ├── refresh-links.js        # Parses Obsidian .md → data/ JSON files (local)
-│   └── netlify-build.js        # Netlify build step — generates config JSONs from env vars
-├── .env                        # Umami + football API keys (gitignored)
-├── .env.example                # Template for .env
-├── .gitignore
-├── .vscode/
-│   └── settings.json           # Sets Live Server host to localhost (CORS fix)
-├── app.js                      # Client-side ES module — all runtime logic
-├── index.html                  # Page structure
-├── netlify.toml                # Netlify build config + security headers
-├── package.json
-└── style.css                   # Glassmorphism styles
-```
+## Key Features
 
-## Setup
+- **Obsidian-powered link source**: Parse a markdown table into `data/links.json` via `npm run refresh`.
+- **Fuzzy and tag-aware search**: Typo-tolerant matching across name, group, and tags using Fuse.js.
+- **Usage tracking**: Per-link click counts, recency grouping, and reset options by time range.
+- **Umami trends integration**: Optional visitors/pageviews/visits deltas with cached metric toggles.
+- **Local-first persistence**: UI state, sort mode, selected metric/period, and click stats in `localStorage`.
+- **Rich utility widgets**: Weather, football table/fixtures, GitHub heatmap, BBC headlines, BTC/GBP chart.
+- **Glassmorphism UI**: Responsive cards with desktop/mobile layouts and a scroll-to-top FAB.
+- **Netlify-compatible static deployment**: Build-time config generation plus serverless proxies for protected API access.
+
+## Tech Stack
+
+| Concern | Solution |
+|---------|----------|
+| Runtime UI | Vanilla JavaScript (ES modules), HTML, CSS |
+| Search | [Fuse.js](https://fusejs.io/) (vendor file in `assets/vendor`) |
+| Icons | [Lucide](https://lucide.dev/) (vendor file in `assets/vendor`) |
+| Weather | [Open-Meteo](https://open-meteo.com/) + [Nominatim](https://nominatim.org/) |
+| Analytics | [Umami Cloud API](https://umami.is/docs/cloud/api-key) |
+| Football data | [football-data.org](https://www.football-data.org/) via Netlify Function proxy |
+| Build/dev scripts | Node.js scripts in `scripts/` |
+| Deployment | Netlify static hosting + Functions |
+
+## Screenshots
+
+<p align="center">
+  <img src="./assets/New-Tab-V2.png" alt="New Tab V2 Full Screenshot" height="500"/>
+</p>
+
+## Architecture
+
+The project is deliberately lightweight:
+
+1. **Data generation layer** (`scripts/refresh-links.js`, `scripts/netlify-build.js`)
+   - Converts local markdown and environment values into JSON files under `data/`.
+2. **Static UI layer** (`index.html`, `style.css`, `app.js`)
+   - Renders tabs, search, sorting, widgets, and interactions in-browser.
+3. **Serverless proxy layer** (`netlify/functions/*.js`)
+   - Handles external requests that should not expose API keys directly to the client.
+
+Secondary widgets initialize after the core links/search UI so the page remains quick to interact with immediately.
+
+## Quick Start
 
 ### 1. Install dependencies
 
@@ -74,7 +114,7 @@ New-Tab-V2/
 npm install
 ```
 
-### 2. Configure
+### 2. Configure Obsidian source
 
 Edit `config/config.yaml`:
 
@@ -82,150 +122,131 @@ Edit `config/config.yaml`:
 # Absolute path to your Obsidian markdown file
 links-list-source-file-path: 'C:\path\to\your\file.md'
 
-# Exact text of the heading above the links table in that file
+# Exact heading text above the links table
 links-list-heading: 'Links List'
 ```
 
-### 3. Set up Umami (optional)
+### 3. (Optional) Add API keys
 
-Copy `.env.example` to `.env` and add your [Umami Cloud API key](https://umami.is/docs/cloud/api-key):
+Copy `.env.example` to `.env` and set any services you use:
 
-```
+```bash
 UMAMI_API_KEY=api_xxxxxxxxxxxxxxxx
+FOOTBALL_DATA_API_KEY=your_key
 ```
 
-### 4. Generate data files
+### 4. Generate local data files
 
 ```bash
 npm run refresh
 ```
 
-This reads the Obsidian file and writes `data/links.json` and `data/umami-config.json`. Re-run whenever you update the links table.
+### 5. Run locally
 
-### 5. Open in browser
-
-Open `index.html` directly, or serve locally for geolocation support:
+- Static mode:
 
 ```bash
 npx serve .
 ```
 
-Then visit `http://localhost:3000`.
+- Netlify Functions mode (required for football proxy):
 
-> **Note:** Browsers block geolocation on `file://` URLs. Use a local server to enable the weather widget.
+```bash
+npm run dev:netlify
+```
 
-> **VS Code Live Server:** The included `.vscode/settings.json` configures Live Server to serve on `http://localhost` instead of `http://127.0.0.1`. This is required because the football-data.org free tier only allows CORS requests from `http://localhost`.
+> Browsers block geolocation on `file://` URLs. Use a local server for weather and geolocation features.
 
-## Obsidian Table Format
+## Configuration
 
-The script expects a markdown table under the configured heading with these columns:
+### Obsidian Source Config
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `links-list-source-file-path` | Absolute path to Obsidian `.md` source | _(required)_ |
+| `links-list-heading` | Heading directly above the table | `Links List` |
+
+### Environment Variables
+
+- `UMAMI_API_KEY` for optional Umami metrics
+- `FOOTBALL_DATA_API_KEY` for football table and fixtures
+
+Generated config files:
+- `data/umami-config.json` (gitignored)
+- `data/football-config.json` (gitignored)
+
+### Obsidian Table Format
+
+`refresh-links.js` expects a markdown table with these columns:
 
 | Order | Link Name | Link | Grouping | Logo URL | Project Link | Umami Tracking Link | Tags |
 |-------|-----------|------|----------|----------|--------------|---------------------|------|
 
-- **Order** — numeric sort order
-- **Link Name** — display name shown on the card
-- **Link** — destination URL (bare, `<url>`, or `[text](url)` format)
-- **Grouping** — category header to group cards under
-- **Logo URL** — circular icon image URL (optional)
-- **Project Link** — secondary link shown as "Project" below the name (optional)
-- **Umami Tracking Link** — full Umami dashboard URL, e.g. `https://cloud.umami.is/analytics/eu/websites/{uuid}` (optional)
-- **Tags** — optional tags used for search, e.g. `Insurance, Finance` or `#Insurance #Finance`; these are normalised into a `tags: string[]` field in `data/links.json`
+- `Tags` accepts comma-separated values or hashtag format (normalized into `tags: string[]`).
 
-## Configuration Reference
+## Widgets and Extras
 
-| Key | Description | Default |
-|-----|-------------|---------|
-| `links-list-source-file-path` | Absolute path to the Obsidian `.md` file | _(required)_ |
-| `links-list-heading` | Heading text above the links table | `Links List` |
+The `Extra` tab includes:
 
-## Widgets & Extras
+- **Premier League table + Liverpool fixtures** (cached per session)
+- **GitHub contributions heatmap** for `bangsluke`
+- **BBC News and BBC Sport headlines**
+- **BTC -> GBP price widget** with range toggles
 
-The `Extra` tab surfaces ambient context widgets that are independent from the primary Links tab.
-
-### Premier League table & fixtures
-
-- Uses the free [football-data.org](https://www.football-data.org/) API, proxied via a Netlify Function (`netlify/functions/football.js`) so the API key is never exposed to the browser.
-- Shows the full Premier League table, with Liverpool highlighted, plus the next 5 Liverpool fixtures (opponent, date/time, competition, home/away).
-- Data is cached in `sessionStorage` (`ntv2-football-cache`) and refreshed once per browser session to stay within free-tier limits.
-
-### GitHub contribution heatmap
-
-- Builds a lightweight activity heatmap for the GitHub user `bangsluke` from the public events API (`https://api.github.com/users/{username}/events/public`).
-- Normalises events into a per-day activity score and renders a 7-column glassmorphism grid with intensity buckets (`level-0` … `level-4`).
-- Results are cached in `sessionStorage` (e.g. `ntv2-github-heatmap`) for the duration of the session to minimise API calls and avoid rate limits.
-
-### Daily BBC News & Sport headlines
-
-- Fetches the latest headlines from the BBC News and BBC Sport RSS feeds via a public RSS→JSON proxy.
-- Renders the top headline for each feed (title + source label + relative time) in a compact card below the football sections.
-- Responses are cached in `sessionStorage` (`ntv2-bbc-headlines`) with a short TTL so you only hit the RSS proxy occasionally.
-
-### Crypto / FX — BTC → GBP
-
-- Uses public, no-auth market data (e.g. CoinGecko’s `market_chart` endpoints) to show BTC priced in GBP.
-- Shows the latest BTC/GBP price and 24h delta, plus a small line chart inside a glass card.
-- Range toggle buttons (24h / 1M / 1Y / All) switch the underlying time window; each range is cached in `sessionStorage` under its own key to avoid repeat fetches.
-
-### Architecture overview
-
-- All runtime logic lives in a single ES module (`app.js`), wired up from `index.html` with no bundler or framework.
-- Static JSON config in `data/` (links, Umami config, football config) is generated by Node.js scripts at build/refresh time and then consumed client-side.
-- Secondary widgets (weather, football, Umami, GitHub, BBC, crypto) initialise asynchronously after the core links/search UI so that time-to-type in the search box stays fast.
+All widget requests are cached in `sessionStorage` to reduce repeated API calls in the same session.
 
 ## Football Data
 
-The Extra tab shows a live Premier League table (P / W / D / L / GD / Pts) and Liverpool's next 5 fixtures, both in glass-card containers. Liverpool is highlighted in red. On mobile, fixture time wraps below the date and (H)/(A) wraps below the competition name. This requires a free API key from [football-data.org](https://www.football-data.org/):
+Football requests are proxied through `netlify/functions/football.js` so the API key is not exposed client-side.
 
-1. Register at football-data.org (free tier: 10 req/min)
-2. Add `FOOTBALL_DATA_API_KEY=your_key` to `.env`
-3. Run `npm run refresh`
-
-Data is cached in `sessionStorage` and refreshed once per browser session.
-
-Football requests are proxied through a Netlify Function (`netlify/functions/football.js`) so the API key is never exposed to the browser and the free-tier CORS restriction is bypassed. To test football data locally, run `npm run dev:netlify` (this uses `npx netlify dev` under the hood and will prompt to install the Netlify CLI if it's not already available).
+1. Register for a free key at [football-data.org](https://www.football-data.org/)
+2. Add `FOOTBALL_DATA_API_KEY` to `.env`
+3. Re-run `npm run refresh`
+4. Use `npm run dev:netlify` for local testing with Functions
 
 ## Deploying to Netlify
 
-The site is fully static — Netlify serves it directly. The build step generates the two API config files from environment variables; `data/links.json` is pre-committed (no secrets).
+The app is static-first. Netlify runs `node scripts/netlify-build.js` to generate environment-backed config files at build time.
 
-### Steps
+1. Push the repository to GitHub
+2. Import in Netlify (auto-detects `netlify.toml`)
+3. Add environment variables:
+   - `UMAMI_API_KEY`
+   - `FOOTBALL_DATA_API_KEY`
+4. Trigger deploy
 
-1. Push the repo to GitHub — verify `.gitignore` excludes `data/umami-config.json` and `data/football-config.json`
-2. Import the repo in Netlify — it will auto-detect `netlify.toml`
-3. In **Site configuration → Environment variables**, add:
-   - `UMAMI_API_KEY` — your Umami Cloud API key (mark as sensitive)
-   - `FOOTBALL_DATA_API_KEY` — your football-data.org API key (mark as sensitive)
-4. Trigger a deploy — Netlify runs `node scripts/netlify-build.js`, which writes the two config files, then serves the project root
+Update links by running `npm run refresh` locally and committing `data/links.json`.
 
-> **Updating links after deploy:** Run `npm run refresh` locally and push the updated `data/links.json`. Netlify will redeploy automatically if auto-deploy is enabled, or trigger a manual deploy.
+## Diagnostics (Debugging)
 
-> **Testing the build locally:** Run `npm run netlify` (with env vars set in your shell or `.env`) to verify the config files are generated correctly before pushing.
+Use these query parameters when troubleshooting:
 
-> **Local football data:** The football API is proxied through a Netlify Function — it won't work with `npx serve .`. Run `npm run dev:netlify` to serve the site with Functions support for local testing.
+| Enable | Effect |
+|--------|--------|
+| `?debug=1` | Enables full debug mode and opens sync debug panel |
+| `?syncDebug=1` | Enables sync-only diagnostics with less noise |
 
-## Diagnostics (debugging)
+Disable by clearing `ntv2-debug` / `ntv2-sync-debug` from `localStorage` or using the in-app debug panel controls.
 
-Use these when something fails silently in the browser (e.g. Edge hiding normal `console.log` lines, weather stuck on “Fetching…”, or Supabase click sync acting odd).
+## File Structure
 
-| How to enable | What it does |
-|---------------|----------------|
-| **`?debug=1`** on the URL (e.g. `https://your-site.netlify.app/?debug=1`) | Turns on full diagnostics: persists **`ntv2-debug`** and **`ntv2-sync-debug`** in `localStorage`, strips the query param from the address bar, opens the on-page **Sync debug** panel, and emits **`console.warn('[New Tab V2 debug]', …)`** lines so messages show under Microsoft Edge’s default console filters (alongside Tracking Prevention warnings). Logs bootstrap timing, weather/geolocation steps, and Supabase config/import/session work. |
-| **`?syncDebug=1`** | Sync-focused logging only; sets **`ntv2-sync-debug`** and opens the same panel. Less noise than `?debug=1`. |
-
-**Turn off:** use **Turn off** in the debug panel (clears both keys), or remove `ntv2-debug` / `ntv2-sync-debug` from `localStorage` in DevTools.
-
-**Production tip:** After the first visit with `?debug=1`, you can reload without the query string — the flag stays on until you turn it off.
-
-**Console noise that is not this app:** Microsoft Edge’s **Tracking Prevention blocked access to storage** lines refer to third-party origins (e.g. remote favicons), not your Netlify tab. Errors like **`runtime.lastError`** / **message channel closed** usually come from a **browser extension** (password manager, ad blocker, React DevTools, etc.); try an incognito window with extensions disabled to confirm.
-
-## Tech Stack
-
-| Concern | Solution |
-|---------|----------|
-| Fuzzy / tagged search | [Fuse.js](https://fusejs.io/) v7 (CDN), plus direct matching over name, category, and tags |
-| Icons | [Lucide](https://lucide.dev/) (CDN) |
-| Weather | [Open-Meteo](https://open-meteo.com/) (free, no key) |
-| Reverse geocoding | [Nominatim / OpenStreetMap](https://nominatim.org/) (free, no key) |
-| Analytics trends | [Umami Cloud API](https://umami.is/docs/cloud/api-key) (API key required) |
-| Markdown parsing | Node.js script (`scripts/refresh-links.js`) |
+```text
+New-Tab-V2/
+├── assets/
+│   ├── favicon-96x96.png
+│   ├── New-Tab-V2.png
+│   ├── vendor/
+│   └── bg.jpg
+├── config/config.yaml
+├── data/
+│   ├── links.json                # committed
+│   ├── umami-config.json         # generated, gitignored
+│   └── football-config.json      # generated, gitignored
+├── netlify/functions/
+├── scripts/
+├── app.js
+├── index.html
+├── style.css
+├── netlify.toml
+└── package.json
+```
