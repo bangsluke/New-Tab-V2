@@ -770,7 +770,7 @@
   {
     "order": 3,
     "name": "Big Lynn 2023",
-    "url": "https://biglynn.netlify.app/2023",
+    "url": "https://biglynn.netlify.app/",
     "category": "Golf",
     "logo": "https://biglynn.netlify.app/images/Big-Lynn-Logo.svg",
     "projectLink": "",
@@ -1388,8 +1388,8 @@
   },
   {
     "order": 8,
-    "name": "localhost:5174",
-    "url": "http://localhost:5174/",
+    "name": "localhost:5173",
+    "url": "http://localhost:5173/",
     "category": "Development",
     "logo": "https://static.thenounproject.com/png/384290-200.png",
     "projectLink": "",
