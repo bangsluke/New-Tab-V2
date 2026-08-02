@@ -1369,6 +1369,43 @@ async function fetchUmamiWindow(config, siteId, startAt, endAt) {
 }
 
 // ── Weather ───────────────────────────────────────────────────────────────
+const WEATHER_LOCATION_OPT_IN_KEY = 'ntv2-weather-location-opt-in';
+
+function showWeatherCta(section) {
+  section.classList.remove('weather-ready', 'weather-expanded');
+  section.innerHTML = `
+    <div class="weather-cta">
+      <p class="weather-cta-text">Local weather needs your location. Click to show weather near you.</p>
+      <button type="button" class="weather-enable-btn">Show weather near me</button>
+    </div>`;
+  const start = () => {
+    section.innerHTML = '<p class="weather-loading">Fetching weather…</p>';
+    loadWeather(section);
+  };
+  section.querySelector('.weather-enable-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    start();
+  });
+  section.querySelector('.weather-cta').addEventListener('click', start);
+}
+
+function showWeatherError(section, message) {
+  section.classList.remove('weather-ready', 'weather-expanded');
+  section.innerHTML = `
+    <div class="weather-cta">
+      <p class="weather-error">${message}</p>
+      <button type="button" class="weather-enable-btn">Try again</button>
+    </div>`;
+  const retry = () => {
+    section.innerHTML = '<p class="weather-loading">Fetching weather…</p>';
+    loadWeather(section);
+  };
+  section.querySelector('.weather-enable-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    retry();
+  });
+}
+
 async function initWeather() {
   const section = $('#weather');
   diagDebugLog('weather: initWeather() running (if this never appears, bootstrap is blocked before initWeather)');
@@ -1379,12 +1416,26 @@ async function initWeather() {
     return;
   }
 
+  if (localStorage.getItem(WEATHER_LOCATION_OPT_IN_KEY) === '1') {
+    diagDebugLog('weather: prior opt-in found — loading without CTA');
+    section.innerHTML = '<p class="weather-loading">Fetching weather…</p>';
+    loadWeather(section);
+    return;
+  }
+
+  diagDebugLog('weather: showing location CTA (no geolocation until click)');
+  showWeatherCta(section);
+}
+
+function loadWeather(section) {
   let geoSettled = false;
   const geoWatchdog = setTimeout(() => {
     if (geoSettled) return;
     diagDebugLog('weather: watchdog — no geolocation success/error after 12s (try allowing location or check browser privacy)');
-    section.innerHTML =
-      '<p class="weather-error">Location did not respond in time. Allow location for this site and refresh, or open with <code>?debug=1</code> for details.</p>';
+    showWeatherError(
+      section,
+      'Location did not respond in time. Allow location for this site, then try again. Or open with <code>?debug=1</code> for details.'
+    );
   }, 12000);
 
   navigator.geolocation.getCurrentPosition(
@@ -1392,6 +1443,11 @@ async function initWeather() {
       geoSettled = true;
       clearTimeout(geoWatchdog);
       const { latitude: lat, longitude: lon } = pos.coords;
+      try {
+        localStorage.setItem(WEATHER_LOCATION_OPT_IN_KEY, '1');
+      } catch {
+        /* ignore quota / private-mode failures */
+      }
       diagDebugLog('weather: geolocation OK', {
         lat: Math.round(lat * 100) / 100,
         lon: Math.round(lon * 100) / 100,
@@ -1412,7 +1468,7 @@ async function initWeather() {
         diagDebugLog('weather: fetch/render failed', {
           message: err && err.message ? err.message : String(err),
         });
-        section.innerHTML = `<p class="weather-error">Weather unavailable: ${err.message}</p>`;
+        showWeatherError(section, `Weather unavailable: ${err.message}`);
       }
     },
     (err) => {
@@ -1423,15 +1479,15 @@ async function initWeather() {
         message: err.message || null,
       });
       const messages = {
-        1: 'Location permission denied. Click the lock/location icon in your browser\'s address bar and allow access, then refresh.',
-        2: 'Location unavailable. Check your device\'s location settings and try refreshing.',
-        3: 'Location request timed out. Try refreshing the page.',
+        1: 'Location permission denied. Click the lock/location icon in your browser\'s address bar and allow access, then try again.',
+        2: 'Location unavailable. Check your device\'s location settings and try again.',
+        3: 'Location request timed out. Try again.',
       };
       const msg = messages[err.code] || `Geolocation error (code ${err.code}).`;
       const fileNote = location.protocol === 'file:'
         ? ' <em>Tip: run <code>npx serve .</code> and open via localhost — some browsers block geolocation on file:// URLs.</em>'
         : '';
-      section.innerHTML = `<p class="weather-error">${msg}${fileNote}</p>`;
+      showWeatherError(section, `${msg}${fileNote}`);
     },
     { timeout: 10000 }
   );
@@ -1472,6 +1528,7 @@ async function fetchCityName(lat, lon) {
 
 function renderWeather(section, data, cityName) {
   section.innerHTML = '';
+  section.classList.add('weather-ready');
 
   const now = new Date();
   const currentHourIndex = data.hourly.time.findIndex(t => {
