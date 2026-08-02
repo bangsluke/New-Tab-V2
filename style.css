@@ -471,9 +471,47 @@ main {
 /* ── Weather widget ──────────────────────────────────────────────────────── */
 #weather {
   overflow: hidden;
-  cursor: pointer;
   padding-top: 0.4rem;
   padding-bottom: 0.7rem;
+}
+
+#weather.weather-ready {
+  cursor: pointer;
+}
+
+.weather-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.weather-cta-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+  max-width: 28rem;
+}
+
+.weather-enable-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+}
+
+.weather-enable-btn:hover {
+  border-color: rgba(129, 140, 248, 0.45);
+  color: #a5b4fc;
 }
 
 /* Summary row — always visible */
